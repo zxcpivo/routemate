@@ -35,7 +35,7 @@ From `frontend/`, run `npm run lint` and `npm run build` to check the code. Afte
 ### GitHub Codespaces
 
 1. [Open the judge preview branch in Codespaces](https://codespaces.new/zxcpivo/unhack-shenanigans/tree/codex/judge-preview). The Codespace installs dependencies, builds the prototype, and starts the preview on port `5173`.
-2. Open **Routemate judge demo** from the **Ports** tab. If the preview fails to open, check `/tmp/routemate-preview.log` in the Codespaces terminal.
+2. Open **Routemate judge demo** from the **Ports** tab. If the preview fails to open, run `bash .devcontainer/start-preview.sh` from the repository root in the Codespaces terminal and check `/tmp/routemate-preview.log` for errors.
 3. To share the demo, set **Port Visibility → Public** on port `5173` and copy its forwarded URL. Anyone with the URL can open the demo while the Codespace is running. Keep it active during judging and set the port back to **Public** if you restart the Codespace. [GitHub port forwarding guide](https://docs.github.com/en/codespaces/developing-in-a-codespace/forwarding-ports-in-your-codespace)
 
 Send judges the forwarded demo URL. The Codespaces creation link is for repository collaborators hosting the demo.
