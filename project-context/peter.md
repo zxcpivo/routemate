@@ -174,11 +174,5 @@ A trusted carpool network for **fixed-schedule commuters**. Riders without a car
 
 ---
 
-## To-do
-- [ ] Do at least 5 real interviews (include 3+ drivers)
-- [ ] Screenshot real "looking for a ride" posts from local groups
-- [ ] Debrief the real interviews and compare them with the simulated ones
-- [ ] Decide the build plan for the demo
-
 ## Log
 - **2026-11-07:** Brainstormed ideas and chose carpooling. Wrote the problem statement, ICP and HMW. Ran a simulated interview debrief. Added this file to the repo.
