@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="144" height="144" viewBox="0 0 144 144" role="img" aria-labelledby="title">
+  <title id="title">Routemate car icon</title>
+  <rect width="144" height="144" rx="34" fill="#C8F8E7"/>
+  <g fill="#142438">
+    <rect x="33" y="84" width="17" height="25" rx="8.5"/>
+    <rect x="94" y="84" width="17" height="25" rx="8.5"/>
+    <path d="m37 63 10-20c3-6 9-9 16-9h18c7 0 13 3 16 9l10 20Z"/>
+    <rect x="27" y="57" width="90" height="40" rx="16"/>
+  </g>
+  <path d="m48 58 6-12c2-3 5-5 9-5h18c4 0 7 2 9 5l6 12Z" fill="#C8F8E7"/>
+  <g fill="#F4FFFB">
+    <circle cx="45" cy="76" r="7"/>
+    <circle cx="99" cy="76" r="7"/>
+  </g>
+  <path d="M63 77q9 9 18 0" fill="none" stroke="#72E6BC" stroke-width="5.5" stroke-linecap="round"/>
+</svg>

@@ -24,19 +24,14 @@
 .logo {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
-  font-weight: 800;
-  font-size: var(--text-lg);
-  letter-spacing: -0.02em;
-  color: var(--color-text);
-  text-decoration: none;
   min-height: var(--tap-min);
 }
 
-.logo__mark {
-  width: 28px;
-  height: 28px;
-  flex: none;
+.logo__wordmark {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: var(--space-8);
 }
 
 .app-nav {

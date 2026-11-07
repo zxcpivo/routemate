@@ -6,13 +6,7 @@ Everything runs in the browser. There is no backend: the people and trips are ma
 
 ## Run it
 
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-Then open http://localhost:5173.
+Follow the [local launch steps](../README.md#launch-locally) and [smoke tests](../README.md#test-the-prototype) in the root README. See [AGENTS.md](../AGENTS.md) for the source map and guidance on making changes.
 
 On a laptop or projector (900px wide or more) the demo shows inside a phone frame, with a panel beside it listing the steps and what each one shows. On a phone it fills the screen.
 
@@ -47,7 +41,7 @@ The earlier screens are still there for deeper questions: near misses with the r
 
 - **Matching:** the three rules from `project-context/approach.md`: shared days, detour within the driver's limit (10 minutes in the demo), and everyone arrives on time.
 - **Travel times:** estimated from straight-line distance (×1.3 for roads, 45 km/h). Transit time is the car time ×1.9, a rough ratio from the 2021 Census averages (47.6 vs 25.5 min). These are estimates, not routing.
-- **Contribution:** the trip's running cost (example $0.20/km) split evenly between the driver and the riders, rounded to $0.50, minimum $2. The driver never gets back more than the trip costs, which keeps it a share of costs (see the insurance note in `approach.md`).
+- The guided demo divides the estimated running cost ($0.20/km) across the driver and riders, rounds each rider's share to the nearest $0.50, and applies a $2 minimum. See the proposed cost-sharing policy in the [project approach](../project-context/approach.md).
 - **Assumptions to test:** the $0.20/km figure, and that nobody arrives more than 20 minutes early.
 
 ## Where things are

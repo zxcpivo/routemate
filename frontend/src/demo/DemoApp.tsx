@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { Icon, LogoMark } from '../components/Icon'
+import { Brand } from '../components/Brand'
+import { Icon } from '../components/Icon'
 import { DEFAULT_ANSWERS, ROLE_DEFAULTS, type Answers } from './plan'
 import {
   AccountStep,
@@ -131,7 +132,7 @@ export default function DemoApp() {
 
       <aside className="presenter" aria-label="About this step">
         <div className="logo">
-          <LogoMark /> Routemate
+          <Brand />
         </div>
         <p className="presenter__tag">Clickable prototype · UNHack 2026</p>
         <ol className="presenter__steps">

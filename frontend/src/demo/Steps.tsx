@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react'
-import { Icon, LogoMark, type IconName } from '../components/Icon'
+import { Brand } from '../components/Brand'
+import { Icon, type IconName } from '../components/Icon'
 import { Avatar, Badge, Button, DayChips, Field } from '../components/ui'
 import { placeById } from '../data/places'
 import { formatMoney, formatTime, fromInputTime, toInputTime } from '../lib/format'
@@ -122,7 +123,7 @@ export function Welcome({ next }: StepProps) {
     <StepLayout
       title={
         <span className="demo-welcome">
-          <LogoMark />
+          <Brand decorative />
           <span>
             Wanna be my <em>routemate?</em>
           </span>
