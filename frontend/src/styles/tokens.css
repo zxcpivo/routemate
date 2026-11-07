@@ -1,0 +1,112 @@
+/* Routemate design tokens. See DESIGN_SYSTEM.md. */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  color-scheme: light;
+
+  /* Colour */
+  --color-bg: #f6f8f7;
+  --color-surface: #ffffff;
+  --color-surface-sunken: #eef2f1;
+  --color-border: #dbe3e1;
+  --color-border-strong: #b9c6c2;
+  --color-text: #13201d;
+  --color-text-muted: #55635f;
+  --color-primary: #0f766e;
+  --color-primary-hover: #115e59;
+  --color-primary-soft: #e0f5f1;
+  --color-on-primary: #ffffff;
+  --color-accent: #f59e0b;
+  --color-success: #15803d;
+  --color-success-soft: #e3f4e8;
+  --color-warning: #b45309;
+  --color-warning-soft: #fdf0dc;
+  --color-danger: #b91c1c;
+  --color-danger-soft: #fbe5e5;
+  --color-info: #1d4ed8;
+  --color-info-soft: #e4ecfb;
+
+  /* Typography */
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.375rem;
+  --text-2xl: 1.75rem;
+  --text-3xl: 2.25rem;
+  --leading-xs: 1rem;
+  --leading-sm: 1.25rem;
+  --leading-md: 1.5rem;
+  --leading-lg: 1.625rem;
+  --leading-xl: 1.75rem;
+  --leading-2xl: 2.125rem;
+  --leading-3xl: 2.625rem;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+
+  /* Elevation */
+  --shadow-1: 0 1px 2px rgb(16 32 28 / 0.06), 0 1px 3px rgb(16 32 28 / 0.06);
+  --shadow-2: 0 4px 12px rgb(16 32 28 / 0.08), 0 2px 4px rgb(16 32 28 / 0.06);
+  --shadow-3: 0 -4px 16px rgb(16 32 28 / 0.08);
+
+  /* Motion */
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* Layout */
+  --content-max: 560px;
+  --tap-min: 44px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --color-bg: #0c1412;
+    --color-surface: #131e1b;
+    --color-surface-sunken: #0f1816;
+    --color-border: #26332f;
+    --color-border-strong: #3a4a45;
+    --color-text: #e7efec;
+    --color-text-muted: #9aaba6;
+    --color-primary: #2dd4bf;
+    --color-primary-hover: #5eead4;
+    --color-primary-soft: #12332e;
+    --color-on-primary: #04211d;
+    --color-accent: #fbbf24;
+    --color-success: #4ade80;
+    --color-success-soft: #123020;
+    --color-warning: #fbbf24;
+    --color-warning-soft: #352a10;
+    --color-danger: #f87171;
+    --color-danger-soft: #3a1717;
+    --color-info: #93b4fb;
+    --color-info-soft: #16223f;
+    --shadow-1: 0 1px 2px rgb(0 0 0 / 0.4);
+    --shadow-2: 0 4px 12px rgb(0 0 0 / 0.45);
+    --shadow-3: 0 -4px 16px rgb(0 0 0 / 0.5);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-base: 0ms;
+  }
+}
