@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { Link, NavLink, Navigate, Outlet, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
-import { LogoMark } from './components/Icon'
+import { Brand } from './components/Brand'
 import { useStore } from './lib/store'
 import DemoApp from './demo/DemoApp'
 import Setup from './pages/Setup'
@@ -17,8 +17,7 @@ function Header() {
     <header className="app-header">
       <div className="app-header__inner">
         <Link to="/" className="logo" aria-label="Routemate demo">
-          <LogoMark />
-          Routemate
+          <Brand decorative />
         </Link>
         {profile && (
           <nav className="app-nav" aria-label="Main">

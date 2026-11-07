@@ -1,0 +1,15 @@
+{
+  "name": "Routemate judge demo",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:24-bookworm",
+  "remoteUser": "node",
+  "postCreateCommand": "npm --prefix frontend ci --no-audit --no-fund && npm --prefix frontend run build",
+  "postStartCommand": "nohup env __VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS=\"$CODESPACE_NAME-5173.$GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN\" npm --prefix frontend run preview -- --host 0.0.0.0 --port 5173 --strictPort </dev/null >/tmp/routemate-preview.log 2>&1 &",
+  "waitFor": "postStartCommand",
+  "forwardPorts": [5173],
+  "portsAttributes": {
+    "5173": {
+      "label": "Routemate judge demo",
+      "onAutoForward": "openPreview"
+    }
+  }
+}

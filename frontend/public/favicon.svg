@@ -1,1 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#0f766e"/><path d="M8 22c3-8 13-4 16-12" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="8" cy="22" r="3" fill="#fbbf24"/><circle cx="24" cy="10" r="3" fill="#fff"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="144" height="144" viewBox="0 0 144 144" role="img" aria-labelledby="title">
+  <title id="title">Routemate icon</title>
+  <rect width="144" height="144" rx="34" fill="#142438"/>
+  <g fill="none" stroke-width="11" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M51 103V64C51 47 59 37 76 37h7c13 0 23 8 23 19s-10 19-23 19H51" stroke="#F4FFFB"/>
+    <path d="M34 75h43c10 0 17 5 22 12l12 16" stroke="#72E6BC"/>
+  </g>
+  <circle cx="51" cy="103" r="8" fill="#F4FFFB"/>
+  <circle cx="34" cy="75" r="8" fill="#72E6BC"/>
+</svg>

@@ -193,9 +193,9 @@
   line-height: var(--leading-3xl);
 }
 
-.demo-welcome .logo__mark {
-  width: 64px;
-  height: 64px;
+.demo-welcome .logo__wordmark {
+  align-self: flex-start;
+  height: var(--space-12);
 }
 
 .demo-welcome em {

@@ -42,6 +42,8 @@ All text pairs meet WCAG AA (4.5:1) against their background. Status colours alw
 
 Font: **Inter** (Google Fonts) with the system UI stack as fallback. Times and money use `font-variant-numeric: tabular-nums`.
 
+The [Routemate logo](../assets/brand/routemate-logo.svg) pairs the route mark with a Manrope ExtraBold wordmark. The SVG switches the lettering colour for dark mode.
+
 | Token | Size / line height | Weight | Use |
 |---|---|---|---|
 | `--text-xs` | 12 / 16 | 500 | Badges, captions |
@@ -108,5 +110,4 @@ Styles in [`src/styles/demo.css`](src/styles/demo.css), code in [`src/demo/`](sr
 
 ## Open questions
 
-- Brand colour and logo are placeholders until the team agrees on branding.
 - Whether to show the contribution comparison (TTC fare, Uber) on the match screen depends on the service-fee decision in `approach.md`.
