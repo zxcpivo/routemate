@@ -8,7 +8,7 @@
 
 The challenge invites us to explore mobility, infrastructure, digital access, emergency response, civic participation, and responsible technology. It connects to UN Sustainable Development Goals 9 (resilient infrastructure and innovation), 11 (inclusive, safe, resilient, and sustainable communities), 16 (peaceful and inclusive societies and accountable institutions), and 17 (partnerships).
 
-This file captures the first of five planned idea-planning Q&As, which focused on sharpening the problem statement. The customer segments, route, and product details are working hypotheses.
+This file captures Prompts 1 and 5 of the idea-planning Q&As. The first part sharpens the problem statement. Prompt 5 assesses the market gap and positioning. The customer segments, route, and product details are working hypotheses.
 
 ## Original idea
 
@@ -62,3 +62,79 @@ The root cause to test is a mismatch between a fixed arrival time and the afford
 3. **Passenger.** Tell me about the last time you considered getting a ride from someone. What did you choose, and what mattered in that decision?
 4. **Driver.** Walk me through your drives to and from work last week. Which days, routes, and times were consistent, and what changed?
 5. **Driver.** Tell me about the last time you arranged, offered, or turned down a ride on your commute. What influenced your decision? If you shared the ride, how did pickup and expenses work?
+
+## Prompt 5 · RideCircle positioning assessment
+
+**Market gap verdict** — Unproven. **Positioning rating** — Promising. The strongest idea is a recurring ride with the same student driver on a trip that is hard to make by transit. York already offers campus carpool matching. RideCircle has to show it can turn a match into a ride students actually take week after week. [York Smart Commute](https://www.yorku.ca/parking/smart-commute/)
+
+### Working inputs
+
+Use York's Keele campus as the first recruitment site because it hosts UNHack. This shifts the first test from Pearson-area workers to students who also work, based on who the team can reach. [UNHack event](https://events.yorku.ca/events/unhack/)
+
+- **Problem statement.** We believe university students without dependable access to a car struggle to get to fixed classes or work shifts on time when a recurring trip has poor transit connections. Today it is a trade-off between leaving extra early, risking lateness, and paying for a last-minute ride.
+- **Ideal customer.** A commuting student who works, makes the same difficult trip at least a couple of days a week, and has little flexibility around arrival time. The first drivers are fellow students who already travel that route at a compatible time.
+- **Value proposition.** Set up a recurring pickup with the same driver from the campus community, on a route they already drive, for an agreed contribution. A backup driver can be arranged in advance where someone has actually committed.
+- **What we've heard.** The founder described a pattern of paying for a last-minute Uber or taking transit and risking lateness. Firsthand customer interviews have yet to be documented. Peter's simulated debrief gives us scenarios to test, including informal carpools that fall apart when someone's schedule changes. [Peter's project notes](peter.md)
+
+### 1. What students do today
+
+| Alternative | Why they stick with it | Where it lets them down |
+| --- | --- | --- |
+| **Keep the current routine** | Leaving early costs no extra fare. A driver who goes alone can leave whenever they want. | Riders give up time, and drivers cover their own costs. If the routine works well enough, there is little reason to switch. |
+| **Bus, subway, or GO** | Keele has two subway stations. A standard adult TTC tap is $3.30, and One Fare reduces eligible transfer costs. | A cheap trip can still be a poor fit if a connection leaves little time before work or class. [York transit directions](https://maps.info.yorku.ca/transit-driving-directions/), [TTC fares](https://www.ttc.ca/news/2026/September/Back-to-school-on-the-TTC), [One Fare](https://www.metrolinx.com/en/projects-and-programs/fare-integration/one-fare-program) |
+| **Ask friends, family, or classmates** | A familiar person can be easier to trust. Texts, a shared calendar, or a spreadsheet can coordinate a group that already exists. | Someone still has to find the group, confirm changes, and cover cancellations. Spreadsheet use is a possible workaround to ask about. |
+| **Hire a ride through Uber or a taxi** | A direct ride is useful when time is tight. Uber also offers advance reservations in Toronto. | The cost can vary and add up with frequent use. A reservation still serves an individual trip. [Uber Toronto](https://www.uber.com/global/en/r/cities/toronto-on-ca/), [Uber Canada pricing](https://www.uber.com/ca/en/ride/how-it-works/upfront-pricing/) |
+| **Use a carpool platform** | York Smart Commute already matches by organization or destination. Poparide offers York student verification and lets drivers post seats to share costs. | The question to verify is whether students can find a committed driver for their exact days and pickup window and keep the arrangement going. [York Smart Commute](https://www.yorku.ca/parking/smart-commute/), [Poparide for York students](https://www.poparide.com/en-ca/edu/yorku) |
+
+### 2. What could make RideCircle different
+
+The difference worth testing is **setting up an ongoing ride**, including who is driving, when they will pick you up, and what you will contribute. Transit runs on its own timetable. One-off ride-hail can get a student there today. A good informal carpool can already deliver the same routine, so RideCircle has to make it easier to find and keep that arrangement.
+
+A **named backup driver who has agreed to the route and pickup window** could add value. York's existing Emergency Ride Home benefit is a reimbursement for eligible staff and faculty. A prearranged student backup depends on having a second driver available. [York Smart Commute](https://www.yorku.ca/parking/smart-commute/)
+
+Student verification, trip tracking, payment screens, age and interest filters, and a nicer interface are features. Lead with getting there on time and knowing who is picking you up. Test whether meeting people affects ride choices before making it part of the pitch.
+
+### 3. Is there a real market gap?
+
+- **Why it is hard.** A campus gives us a shared destination and a place to recruit. The pool gets smaller once we filter for neighborhood, direction, days, arrival time, acceptable detour, and drivers willing to commit. A match that works Monday morning may offer no help getting home after a shift.
+- **Who tried.** Waze retired its carpool service in 2022, citing shifts in driving patterns after COVID and a decision to refocus. This suggests carpool services depend on stable travel routines. Locally, Smart Commute and Poparide are still operating and give us real alternatives to test against. [Waze announcement](https://www.waze.com/discuss/t/retiring-the-waze-carpool-service/330261), [York Smart Commute](https://www.yorku.ca/parking/smart-commute/), [Poparide for York students](https://www.poparide.com/en-ca/edu/yorku)
+- **Size and spend.** York reports over 52,000 students at Keele. In the 2019 StudentMoveTO survey, York students averaged 57.4 minutes one way across modes, and the broader regional sample reported $220 per month in transportation spending. Those figures establish campus scale and historical burden. The addressable count is still unknown. Count students with a costly, repeat trip in one pickup window, then count the committed driver seats that can serve them. [York campus figures](https://www.yorku.ca/campuses/), [York survey results](https://www.torontomu.ca/city-building/news-research/2020/10/StudentMoveTO-survey-results/), [StudentMoveTO report](https://www.studentmoveto.ca/wp-content/uploads/2020/10/StudentMoveTO-2019-Report-Final-5-Updated-October-15-2020.pdf)
+- **Growth.** The direction for this niche is unknown. One Fare strengthens transit on eligible trips, while term and shift changes can disrupt an established carpool. Individual York forum posts show students seeking or offering rides, with the resulting rides and payments still unknown. [One Fare](https://www.metrolinx.com/en/projects-and-programs/fare-integration/one-fare-program), [York student seeking a Brampton carpool](https://www.reddit.com/r/yorku/comments/x53g3w/), [York student offering to share a commute](https://www.reddit.com/r/yorku/comments/13qykft/)
+
+**What would prove it.** Find students on one corridor who already lose substantial time, pay for backup rides, or actively seek lifts. See whether they complete repeat rides and pay the agreed contribution while the same drivers keep showing up. If most students simply leave a little earlier and rarely pay for a backup, keeping their current routine is the strongest competitor.
+
+### 4. Turn the differences into value
+
+| Proposed difference | Outcome to measure |
+| --- | --- |
+| **Same driver and agreed pickup window** | Fewer minutes spent arranging rides or leaving extra early for transfers, fewer late arrivals, and less uncertainty about who is picking them up. |
+| **Agreed contribution** | More predictable spending for riders and some cost recovery for drivers. At an illustrative $5 per ride, a student saves $15 when it replaces a $20 Uber but pays $1.70 more when it replaces a $3.30 TTC tap. Track which trips are actually replaced. [TTC fare](https://www.ttc.ca/news/2026/September/Back-to-school-on-the-TTC) |
+| **Prearranged backup where available** | Fewer disrupted commutes that end in a scramble, an expensive ride, or a late arrival. Measure how often the backup actually covers a cancellation. |
+
+### 5. Who would care most
+
+Start with **working Keele students who repeatedly make one difficult trip with a hard arrival deadline**, already leave substantially early or sometimes pay for a backup, and can meet at a consistent pickup point. Campus is where we can recruit them. The ride itself could be **home to campus** or **campus to work**, depending on where riders and drivers overlap. Screen drivers for a repeat route and willingness to commit. Being younger or open to meeting people is a hypothesis about willingness. A consistent schedule is something we can check.
+
+### 6. Market frame
+
+1. **Recurring campus carpool.** Best fit. It makes the shared community and repeat ride immediately clear.
+2. **Scheduled rides for working students.** Puts arrival time first, but can sound like a commercial ride service.
+3. **Student carpool matching.** Familiar, but puts RideCircle in direct comparison with existing matching tools and leaves out the recurring commitment.
+
+### 7. Two positioning statements
+
+**Against last-minute ride-hail**
+
+> For working university students who struggle to get to fixed classes or shifts on time, RideCircle is a recurring campus carpool that gives them a ride they can plan around. Unlike booking a ride-hail trip each time, we pair students with the same driver on an existing route for agreed days, pickup times, and contributions.
+
+**Against informal ride coordination**
+
+> For student commuters who struggle to keep an informal lift going, RideCircle is a recurring campus carpool that makes pickups easier to plan around. Unlike asking for rides in a group chat, we match students around an existing commute and help them agree on a repeating pickup schedule upfront.
+
+### 8. Gut check and interview questions
+
+**Promising.** The biggest risk is too few drivers who can reliably commit to the same pickup windows as the riders who need them. A large campus and plenty of signups can still leave one specific trip uncovered.
+
+1. **Rider.** Walk me through the last time getting to class or work did not go to plan. What did you do, what did it cost, and how many times has that happened this month?
+2. **Rider.** What have you already tried to make that trip easier? If you looked for or arranged a regular lift, what happened and how long did it last?
+3. **Driver.** Walk me through the trips you drove last week. Tell me about the last time you offered or turned down a pickup. What made it fit or interfere with your schedule?
