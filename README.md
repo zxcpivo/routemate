@@ -6,6 +6,8 @@
 
 Routemate is a clickable carpooling prototype with simulated drivers, riders, and ride requests. It runs in the browser without a backend.
 
+[Judge demo on GitHub Pages](https://zxcpivo.github.io/unhack-shenanigans/) · [Update Routemate with an LLM](AGENTS.md)
+
 ## Launch locally
 
 Use Node.js 24 and npm. Run these commands from the repository root.
@@ -30,18 +32,18 @@ Between runs, click **Restart demo** in the desktop side panel or **Restart the 
 
 From `frontend/`, run `npm run lint` and `npm run build` to check the code. After building, `npm run preview` serves the production build locally, usually at [http://localhost:4173](http://localhost:4173).
 
-## Test from GitHub
+## Update the GitHub Pages demo
 
-### GitHub Codespaces
+A repository maintainer enables **GitHub Actions** as the source under **Settings → Pages**. The [Pages workflow](.github/workflows/pages.yml) builds and publishes the frontend on pushes to `main` and `codex/judge-preview`. [GitHub Pages setup guide](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site)
 
-1. [Open the judge preview branch in Codespaces](https://codespaces.new/zxcpivo/unhack-shenanigans/tree/codex/judge-preview). The Codespace installs dependencies, builds the prototype, and starts the preview on port `5173`.
-2. Open **Routemate judge demo** from the **Ports** tab. If the preview fails to open, run `bash .devcontainer/start-preview.sh` from the repository root in the Codespaces terminal and check `/tmp/routemate-preview.log` for errors.
-3. To share the demo, set **Port Visibility → Public** on port `5173` and copy its forwarded URL. Anyone with the URL can open the demo while the Codespace is running. Keep it active during judging and set the port back to **Public** if you restart the Codespace. [GitHub port forwarding guide](https://docs.github.com/en/codespaces/developing-in-a-codespace/forwarding-ports-in-your-codespace)
+To check the Pages build locally, run these commands from `frontend/` with Node.js 24.
 
-Send judges the forwarded demo URL. The Codespaces creation link is for repository collaborators hosting the demo.
+```bash
+npm ci
+npm run build:pages
+npm run preview
+```
 
-### GitHub Pages
-
-For a shareable demo link that opens without a terminal, deploy the static `frontend/dist` build to GitHub Pages with GitHub Actions. A project site under `/unhack-shenanigans/` needs a matching Vite base path and React Router basename. Direct links to screens such as `/setup/rider` also need a routing strategy that works on a static host. [Vite deployment guide](https://vite.dev/guide/static-deploy#github-pages)
+After pushing, check the [deployment workflow run](https://github.com/zxcpivo/unhack-shenanigans/actions/workflows/pages.yml), then open the judge link and [the rider setup deep link](https://zxcpivo.github.io/unhack-shenanigans/#/setup/rider) in a browser.
 
 See the [frontend guide](frontend/README.md) for the full demo walkthrough and how matching works.

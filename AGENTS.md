@@ -1,0 +1,38 @@
+# Working on Routemate
+
+Use this guide when updating Routemate with an LLM or coding agent. Open the source repository at its root and ask the agent to read this file and the linked guide for the area you want changed.
+
+## Project context
+
+- [Agreed approach](project-context/approach.md) records product decisions and takes precedence over individual team notes. [Judging guide](project-context/unhack-prototype.md) covers the submission and what the prototype demonstrates.
+- [README](README.md) has setup, smoke tests, and publishing steps. [Frontend guide](frontend/README.md) walks through the screens. [Design system](frontend/DESIGN_SYSTEM.md) describes styling and interaction patterns.
+- Routemate is a React and TypeScript prototype. Keep the demo data fictional. Accounts, requests, and check-ins are simulated in the browser. Present travel times and savings as estimates. Treat the interview simulations in the project notes as hypotheses.
+
+## Where to make changes
+
+| Change | Start here |
+| --- | --- |
+| Guided demo at `/` | [`DemoApp.tsx`](frontend/src/demo/DemoApp.tsx) owns step order, navigation, presenter notes, and saved answers. [`Steps.tsx`](frontend/src/demo/Steps.tsx) owns the screens and input choices. |
+| Defaults, pickup order, group detour, or guided cost split | [`plan.ts`](frontend/src/demo/plan.ts) owns the role defaults and multi-rider route. [`RouteMap.tsx`](frontend/src/demo/RouteMap.tsx) draws the resulting stops. |
+| Matching rules or distance estimates | [`matching.ts`](frontend/src/lib/matching.ts) runs the shared pairwise checks for overlapping days, detour, and arrival times. The fuller app's contribution suggestion also lives here and uses a separate formula from the guided demo. |
+| Sample commuters or locations | [`demo.ts`](frontend/src/data/demo.ts) holds commuters and [`places.ts`](frontend/src/data/places.ts) holds place IDs and coordinates. Update the guided `STARTS` or `DESTINATIONS` in [`Steps.tsx`](frontend/src/demo/Steps.tsx) if a new place should be selectable there. |
+| Setup, match details, backup driver, or check-in | [`App.tsx`](frontend/src/App.tsx) registers the routes. [`pages/`](frontend/src/pages/) renders the screens, and [`store.tsx`](frontend/src/lib/store.tsx) owns the fuller app's profile and arrangement. |
+| Styling or branding | [`tokens.css`](frontend/src/styles/tokens.css) holds design tokens. Use the shared controls in [`ui.tsx`](frontend/src/components/ui.tsx), the guided styles in [`demo.css`](frontend/src/styles/demo.css), and the logo in [`assets/brand/`](assets/brand/). |
+
+## Behaviour to preserve
+
+- The guided demo saves `routemate-demo-v1`. The fuller app saves `routemate-prototype-v1`. Preserve existing IDs and stored values, or handle old data when changing the shape. `placeById` throws for unknown IDs. Times are minutes after midnight and contributions are dollars per ride.
+- Changing role, destination, start, time, or days clears prior guided match selections. Keep the driver seat and whole-route detour checks when editing match selection. The default demo allows up to three riders and a 10-minute detour.
+- The demo fills the screen on mobile and shows a phone frame with presenter notes at 900px and above. Preserve keyboard access, heading focus on step changes, and visible status text.
+- Local mode uses normal browser paths. The Pages build uses hash routes and relative asset URLs so it works under a repository subpath. The [Pages workflow](.github/workflows/pages.yml) publishes only the generated `frontend/dist` contents.
+
+## Verify a change
+
+1. Use Node.js 24. Run `npm ci`, `npm run lint`, and `npm run build` from `frontend/`.
+2. Run the relevant [README smoke tests](README.md#test-the-prototype). For matching, location, or schedule changes, check both demo roles, Maple's no-match recovery, and the fuller setup route. If expected results change, update the demo guide and README to match.
+3. For UI changes, check mobile and desktop widths. Try Back, Restart, and a reload partway through the flow when changing navigation or saved answers.
+4. For hosting changes, run `npm run build:pages`. Check that the published root loads and that `/#/setup/rider` opens directly and survives a reload.
+
+Example prompt for a collaborator's LLM
+
+> Read `AGENTS.md`. Change the driver savings screen to show the cost per rider alongside the monthly estimate. Keep the matching rules and presets. Run the driver smoke test and report what you verified.
