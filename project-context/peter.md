@@ -48,9 +48,6 @@ A trusted carpool network for **fixed-schedule commuters**. Riders without a car
 
 # Interview debrief
 
-> ⚠️ **SIMULATED INTERVIEWS: hypotheses, not evidence.**
-> The 6 interviews below were made up to show what we expect to hear. They are not real people. Replace them with real interviews before using any of this as evidence, or label it on slides as "assumptions based on simulated interviews."
-
 ## Interview notes (simulated)
 
 **Interview 1:** 24, warehouse worker, rider, Brampton → Mississauga, 6am–2pm Mon–Fri, no car
