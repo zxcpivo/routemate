@@ -13,7 +13,7 @@ _Last updated: 2026-11-07_
 
 **Slide version:** How might we turn same-route, same-time neighbours into a trusted daily carpool?
 
-## Idea (working name: RideCircle)
+## Idea (working name: Routemate)
 A trusted carpool network for **fixed-schedule commuters**. Riders without a car are matched with verified neighbours, coworkers or classmates who already drive the same route at the same time.
 
 - **Recurring matches:** the same people, the same route, every day.
