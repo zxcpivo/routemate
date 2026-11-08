@@ -4,6 +4,7 @@
 import { DEMO_DRIVERS, DEMO_RIDERS } from '../data/demo'
 import { pinId, placeById } from '../data/places'
 import { COST_PER_KM, EARLY_LIMIT_MIN, STOP_MIN, distanceKm, driveMin, matchPair } from '../lib/matching'
+import { compareAffinity, MIN_AGE, type MatchProfile } from '../lib/affinity'
 import type { Day, Driver, Rider, Role } from '../lib/types'
 
 export const MAX_DETOUR = 10 // default from approach.md; drivers can change it on the Choose matches screen
@@ -14,17 +15,17 @@ const WEEKS_PER_MONTH = 4.33
 // commute in the Toronto area). Different trips, so this is only an estimate.
 export const TRANSIT_FACTOR = 1.9
 
-export type Answers = {
+export type Trip = {
   role: Role | null
   destinationId: string
   startId: string
   arriveBy: number
   days: Day[]
-  name: string
-  email: string
   selectedIds: string[] // chosen passengers (driver) or chosen driver (rider)
   maxDetour?: number // driver's detour limit in minutes; older saved answers may not have it
 }
+
+export type Answers = Trip & MatchProfile & { name: string; email: string }
 
 export const DEFAULT_ANSWERS: Answers = {
   role: null,
@@ -34,6 +35,8 @@ export const DEFAULT_ANSWERS: Answers = {
   days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
   name: '',
   email: '',
+  age: MIN_AGE,
+  interests: [],
   selectedIds: [],
   maxDetour: MAX_DETOUR,
 }
@@ -47,6 +50,7 @@ export const ROLE_DEFAULTS: Record<Role, Pick<Answers, 'startId' | 'arriveBy' | 
 export function meAsDriver(a: Answers): Driver {
   return {
     id: 'me', role: 'driver', name: a.name || 'You', blurb: '', car: 'Your car',
+    age: a.age, interests: a.interests,
     startId: a.startId, destinationId: a.destinationId, arriveBy: a.arriveBy, days: a.days,
     maxDetour: a.maxDetour ?? MAX_DETOUR, seats: SEATS,
   }
@@ -55,6 +59,7 @@ export function meAsDriver(a: Answers): Driver {
 export function meAsRider(a: Answers): Rider {
   return {
     id: 'me', role: 'rider', name: a.name || 'You', blurb: '',
+    age: a.age, interests: a.interests,
     startId: a.startId, destinationId: a.destinationId, arriveBy: a.arriveBy, days: a.days,
   }
 }
@@ -189,7 +194,7 @@ export function driverCandidates(me: Driver): Rider[] {
   return castRiders(me)
     .map((r) => matchPair(me, r))
     .filter((m) => m.ok)
-    .sort((a, b) => a.detour - b.detour)
+    .sort((a, b) => compareAffinity(me, a.rider, b.rider) || a.detour - b.detour)
     .map((m) => m.rider)
 }
 
@@ -197,11 +202,11 @@ export function riderCandidates(me: Rider): Driver[] {
   // Most shared days first: one regular driver for the whole week is the goal.
   return castDrivers(me).map((d) => matchPair(d, me))
     .filter((m) => m.ok)
-    .sort((a, b) => b.sharedDays.length - a.sharedDays.length || a.detour - b.detour)
+    .sort((a, b) => b.sharedDays.length - a.sharedDays.length || compareAffinity(me, a.driver, b.driver) || a.detour - b.detour)
     .map((m) => m.driver)
 }
 
-// Fill seats with the closest riders while the whole route stays within the detour limit.
+// Fill seats with the highest-ranked riders while the whole route stays within the detour limit.
 export function suggestRiders(me: Driver, candidates: Rider[]): Rider[] {
   const picked: Rider[] = []
   for (const r of candidates) {

@@ -22,13 +22,14 @@ Open [http://localhost:5173](http://localhost:5173) or use the URL Vite prints i
 
 ## Test the prototype
 
-Between runs, click **Restart demo** in the desktop side panel or **Restart the demo** on the final screen. When the demo asks for an account, click **Fill in demo details**, then **Create account**.
+Between runs, click **Restart demo** in the presenter controls beside the phone or below the mobile app. When the demo asks for an account, click **Fill in demo details**, then **Create account**.
 
 | Flow | Steps | What to check |
 | --- | --- | --- |
-| Driver | Choose **I drive** and keep the defaults for York Keele, Downtown Brampton, and 8:00 AM on weekdays. | Eight riders appear. The three suggested riders add 6 minutes and save about $78 per month. Continue through the shared route to **Route shared!** |
+| Driver | Choose **I drive** and keep the defaults for York Keele, Downtown Brampton, and 8:00 AM on weekdays. | Your savings estimates 6 extra minutes and about $78 per month with three riders. Pick a few interests and check the match cards for topics you share. Continue through the shared route to **Route shared!** |
 | Rider | Choose **I need a ride** and keep the defaults for York Keele, Malton, and 8:00 AM on Monday, Wednesday, and Thursday. | Nine drivers appear. The suggested ride costs $3 and saves about 19 minutes. Continue through the shared route to **Request accepted!** |
 | Any trip | Pick any start, destination, time and days. | Matches always appear. **Preview: no riders found** on Your savings shows the no-match screen, which offers to change the starting point or arrival time. As a driver it also lists earlier arrival times that have riders; tapping one returns to Your savings with that time. **Preview: nobody selected** on Shared route shows that screen. |
+| Route management | From Home, add a route for another shift or choose **Add return route** from **View all routes**. Change the days and arrival time, save, then edit one route. | Both routes keep separate schedules and matches after reload. Home shows the next trip across both. **Can’t drive?** asks for a route before showing dates. |
 
 From `frontend/`, run `npm run lint` and `npm run build` to check the code. After building, `npm run preview` serves the production build locally, usually at [http://localhost:4173](http://localhost:4173).
 
