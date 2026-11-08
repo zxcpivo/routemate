@@ -6,7 +6,7 @@
 
 Routemate is a clickable carpooling prototype with simulated drivers, riders, and ride requests. It runs in the browser without a backend.
 
-[Judge demo on GitHub Pages](https://zxcpivo.github.io/unhack-shenanigans/) · [Update Routemate with an LLM](AGENTS.md)
+[Judge demo on GitHub Pages](https://zxcpivo.github.io/unhack-shenanigans/)
 
 ## Launch locally
 
