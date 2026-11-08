@@ -9,9 +9,14 @@ These are hypothetical scenarios, not incidents reported in the customer intervi
 ## Violence and safety
 
 - **V1:** What if the driver or passenger threatens the other person?
+    Before: Make “no threats, harassment, or intimidation” an explicit rule. Either person can cancel before pickup if they feel uncomfortable; Make it a rule for the driver to have a dash cam that records the inside of the car. This is to make it harder for people to abuse the system.
+    During: Provide an easily accessible Get help screen with a Call 911 option and the trip’s vehicle details and location.  
+    After: Let the person report the incident and block the other person. Blocking should prevent future recurring rides and backup matches between them.
+    Important: A report button needs someone responsible for reviewing reports. We cannot promise immediate assistance from our team without actually providing that service.
 - **V2:** What if the driver refuses to let the passenger out?
+    Our rule is: “A passenger can ask to end the ride. The driver must stop at the nearest place where it is safe and permitted to let them out.” The passenger should face no cancellation penalty for ending a ride over a safety concern. If the driver refuses to release them, treat it as an emergency. Afterward, prevent further pairings and review the report urgently. Keep relevant trip records and messages available for an authorized investigation.
 - **V3:** What if a different person arrives instead of the agreed driver?
-- **V4:** What if someone feels unsafe but their phone is dead or has no signal?
+    Before pickup, the app needs to show the agreed driver’s name and photo, the car’s make, model, color, and licence plate. The passenger should compare those details before entering. In case the details don't match, IDK THINK OF SOMETHING THAT MAKES MORE SENSE 
 
 ## Theft
 
