@@ -95,6 +95,7 @@ export default function DemoApp() {
   useEffect(() => {
     bodyRef.current?.querySelector('h1')?.focus({ preventScroll: true })
     bodyRef.current?.querySelector('.demo-body')?.scrollTo(0, 0)
+    window.scrollTo(0, 0)
     if (step !== 'home') return
     const timer = window.setInterval(() => setNow(new Date()), 30_000)
     return () => window.clearInterval(timer)

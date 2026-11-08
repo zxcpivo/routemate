@@ -72,7 +72,8 @@ export function Wheel({ label, items, index, onChange, min = 0 }: { label: strin
     if (!d.moved) {
       // A click: the column holds the pointer, so find the row under it ourselves.
       const y = e.clientY - el.current.getBoundingClientRect().top + el.current.scrollTop
-      go(Math.floor(y / ROW) - 2) // two rows of padding above the first item
+      const padding = (el.current.clientHeight - ROW) / 2
+      go(Math.floor((y - padding) / ROW))
       return
     }
     const i = rowAt()

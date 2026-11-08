@@ -1047,30 +1047,74 @@
 }
 
 /* Profile choices and route dashboard */
+.phone:has(.profile-step) .demo-top {
+  padding-block: var(--space-1);
+}
+
+.profile-step .demo-body {
+  gap: var(--space-2);
+  padding-block: var(--space-1) var(--space-2);
+}
+
+.profile-step .demo-foot {
+  padding-block: var(--space-2) calc(var(--space-2) + env(safe-area-inset-bottom));
+}
+
+.profile-age {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(92px, 40%);
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.age-wheel {
+  height: calc(var(--wheel-row) * 2.5);
+}
+
 .age-wheel .wheel {
   width: 100%;
+  padding-block: calc(var(--wheel-row) * 0.75);
+}
+
+.profile-interests {
+  display: grid;
+  gap: var(--space-2);
 }
 
 .interest-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-1);
 }
 
 .interest-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
+  position: relative;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 2px;
   min-height: var(--tap-min);
-  padding: var(--space-2) var(--space-3);
+  padding: 2px;
   border: 1px solid var(--color-border-strong);
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-md);
   background: var(--color-surface);
   color: var(--color-text);
   font: inherit;
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
+  line-height: 1.15;
   font-weight: 600;
+  text-align: center;
   cursor: pointer;
+}
+
+.interest-chip__emoji {
+  font-size: var(--text-sm);
+}
+
+.interest-chip svg {
+  position: absolute;
+  top: var(--space-1);
+  right: var(--space-1);
 }
 
 .interest-chip:hover,

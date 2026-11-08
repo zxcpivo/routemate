@@ -55,6 +55,7 @@ export function StepLayout({
   loading,
   onSubmit,
   secondary,
+  className,
 }: {
   title: ReactNode
   lede?: ReactNode
@@ -64,13 +65,14 @@ export function StepLayout({
   loading?: boolean
   onSubmit?: () => void
   secondary?: ReactNode
+  className?: string
 }) {
   const submit = (e: FormEvent) => {
     e.preventDefault()
     if (!ctaDisabled && !loading) onSubmit?.()
   }
   return (
-    <form className="demo-step" onSubmit={submit} noValidate>
+    <form className={className ? `demo-step ${className}` : 'demo-step'} onSubmit={submit} noValidate>
       <div className="demo-body">
         <div className="stack" style={{ gap: 'var(--space-2)' }}>
           <h1 className="demo-title" tabIndex={-1}>
@@ -502,30 +504,30 @@ export function ProfileStep({ a, set, next }: StepProps) {
   const age = a.age ?? MIN_AGE
   const interests = a.interests ?? []
   return (
-    <StepLayout title="Make it your ride" lede="Your age and interests help us rank people who fit your route." cta="Continue" onSubmit={next}>
-      <section className="stack" aria-labelledby="age-h">
+    <StepLayout className="profile-step" title="Make the miles fly" cta="Continue" onSubmit={next}>
+      <section className="profile-age" aria-labelledby="age-h">
         <div>
-          <h2 id="age-h" className="demo-subtitle">How old are you?</h2>
-          <p className="muted small">Drag to choose. Routemate is for ages 18 and up.</p>
+          <h2 id="age-h" className="demo-subtitle">Your age</h2>
+          <p className="muted small">Drag to choose · 18+</p>
         </div>
         <div className="time-wheel age-wheel">
           <span className="time-wheel__band" aria-hidden="true" />
           <Wheel label="Age" items={AGES} index={age - MIN_AGE} min={MIN_AGE} onChange={(i) => set({ age: i + MIN_AGE })} />
         </div>
       </section>
-      <section className="stack" aria-labelledby="interests-h">
-        <div>
+      <section className="profile-interests" aria-labelledby="interests-h">
+        <div className="row-between">
           <h2 id="interests-h" className="demo-subtitle">What are you into?</h2>
-          <p className="muted small">Tap any topics you like. This is optional.</p>
+          <span className="muted small">Optional</span>
         </div>
-        <div className="interest-grid" role="group" aria-label="Interests">
+        <div className="interest-grid" role="group" aria-labelledby="interests-h">
           {INTERESTS.map(([emoji, topic]) => {
             const selected = interests.includes(topic)
             return (
               <button key={topic} type="button" className="interest-chip" aria-pressed={selected}
                 onClick={() => set({ interests: selected ? interests.filter((value) => value !== topic) : [...interests, topic] })}>
-                <span aria-hidden="true">{emoji}</span>
-                {topic}
+                <span className="interest-chip__emoji" aria-hidden="true">{emoji}</span>
+                <span>{topic}</span>
                 {selected && <Icon name="check" size={14} />}
               </button>
             )
