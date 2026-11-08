@@ -23,11 +23,11 @@ Use this guide when updating Routemate with an LLM or coding agent. Open the sou
 ## Behaviour to preserve
 
 - The guided demo saves `routemate-demo-v1`. The fuller app saves `routemate-prototype-v1`. Preserve existing IDs and stored values, or handle old data when changing the shape. `placeById` throws for unknown IDs, except dragged pins stored as `pin:<lat>,<lng>`. Times are minutes after midnight and contributions are dollars per ride.
-- The guided demo always finds matches: `castRiders` and `castDrivers` in [`plan.ts`](frontend/src/demo/plan.ts) fit the sample commuters to the tester's trip. The fuller app keeps strict matching. Error screens in the guided demo are reached through `DemoPreview` buttons.
+- The guided demo fits its fictional students to the trip: `castRiders` and `castDrivers` in [`plan.ts`](frontend/src/demo/plan.ts) fit the sample commuters to the tester's trip. Both flows enforce ride preferences. The fuller app keeps strict route matching. The presenter panel has preview buttons for the guided demo’s empty states.
 - Changing role, destination, start, time, or days clears prior guided match selections. Keep the driver seat and whole-route detour checks when editing match selection. The default demo allows up to three riders and a 10-minute detour; drivers can adjust the limit from 5 to 20 minutes on Choose matches.
-- `<html>` always has `data-theme="light"` or `"dark"`, set before first paint in `index.html` and kept by [`theme.ts`](frontend/src/lib/theme.ts). It follows the device until someone uses the presenter panel switch, then saves `routemate-theme`. Put dark colours under `:root[data-theme='dark']` in `tokens.css`, not a media query.
+- `<html>` always has `data-theme="light"` or `"dark"`, set before first paint in `index.html` and kept by [`theme.ts`](frontend/src/lib/theme.ts). It defaults to light and remembers an explicit choice made with the presenter panel switch. Put dark colours under `:root[data-theme='dark']` in `tokens.css`, not a media query.
 - The demo fills the screen on mobile and shows a phone frame with presenter notes at 900px and above. Preserve keyboard access, heading focus on step changes, and visible status text.
-- The Starting point & Destination map loads OpenStreetMap tiles and an OSRM road route over the network. Offline, it still shows the pins and a dashed straight line, and the matching maths never depends on it.
+- The Starting point & Destination map loads OpenStreetMap tiles and requests an OSRM road route for listed places. Custom pins use a straight-line estimate. Offline, it still shows the pins and a dashed straight line, and the matching maths never depends on it.
 - Local mode uses normal browser paths. The Pages build uses hash routes and relative asset URLs so it works under a repository subpath. The [Pages workflow](.github/workflows/pages.yml) publishes only the generated `frontend/dist` contents.
 
 ## Verify a change

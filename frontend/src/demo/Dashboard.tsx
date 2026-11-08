@@ -48,7 +48,7 @@ export function Home({ profile, routes, goTo, addRoute, updateRoute, upcoming, n
             <h2 id="home-routes" className="section-title">Your routes</h2>
             <Badge>{routes.length} saved</Badge>
           </div>
-          <p className="muted small">Set a separate schedule for another shift or the trip back.</p>
+          <p className="muted small">Set a separate schedule for a different class day or the trip home.</p>
           <div className="row wrap">
             <Button icon="pin" onClick={addRoute}>Add a route</Button>
             <Button variant="ghost" onClick={() => goTo('routes')}>View all routes</Button>

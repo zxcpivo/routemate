@@ -1,6 +1,7 @@
 import { placeById } from '../data/places'
+import { meetsRidePreference } from '../lib/ridePreferences'
 import { DAYS, type Day, type Driver } from '../lib/types'
-import { driverCandidates, meAsDriver, meAsRider, planRoute, riderCandidates, type Answers, type Trip } from './plan'
+import { driverCandidates, driverGroupMeetsPreference, meAsDriver, meAsRider, planRoute, riderCandidates, type Answers, type Trip } from './plan'
 
 export type SavedRoute = {
   id: string
@@ -15,8 +16,9 @@ export function getRide(a: Answers) {
   const driver = isDriver ? meAsDriver(a) : riderCandidates(me).find((d) => d.id === a.selectedIds[0])
   if (!driver) return null
   const riders = isDriver ? driverCandidates(driver).filter((r) => a.selectedIds.includes(r.id)) : [me]
-  if (!riders.length) return null
+  if (!riders.length || !driverGroupMeetsPreference(driver, riders)) return null
   const plan = planRoute(driver, riders, isDriver ? 'driver' : 'rider')
+  if (plan.overLimit) return null
   const others = isDriver ? plan.riders : [driver]
   const days = isDriver ? a.days.filter((day) => plan.riders.some((rider) => plan.sharedDays[rider.id].includes(day))) : plan.sharedDays.me
   const time = isDriver ? plan.departTime : plan.stops.find((stop) => stop.kind === 'pickup')?.time ?? plan.departTime
@@ -55,6 +57,8 @@ export function findBackup(ride: NonNullable<ReturnType<typeof getRide>>, day: D
   if (!first) return
   return riderCandidates({ ...first, days: [day] }).find((driver) => {
     if (driver.id === ride.plan.driver.id || driver.seats < riders.length) return false
+    if (!riders.every((rider) => meetsRidePreference(rider, [driver, ...riders.filter((other) => other.id !== rider.id)]))) return false
+    if (!meetsRidePreference(ride.plan.driver, [driver, ...riders])) return false
     const plan = planRoute(driver, riders)
     return !plan.overLimit && plan.warnings.length === 0
   })

@@ -1,6 +1,7 @@
-import { useId, useMemo, useState, type KeyboardEvent } from 'react'
-import { placeById, type Place } from '../data/places'
+import { useId, useState, type KeyboardEvent } from 'react'
+import { isCustomPin, placeById, placesByDistance, type Place } from '../data/places'
 import { Icon, type IconName } from './Icon'
+import { Callout } from './ui'
 
 // Type-ahead search over a local list of public places (stations, malls, campuses).
 // Follows the ARIA combobox pattern: arrow keys move, Enter picks, Escape closes.
@@ -21,6 +22,7 @@ export function PlaceSearch({
   options,
   icon = 'pin',
   placeholder,
+  pickup,
 }: {
   label?: string
   labelledBy?: string // use an existing heading as the label instead
@@ -30,19 +32,20 @@ export function PlaceSearch({
   options: Place[] // in the order to suggest them
   icon?: IconName
   placeholder?: string
+  pickup?: boolean
 }) {
   const id = useId()
   const listId = `${id}-list`
   const hintId = hint ? `${id}-hint` : undefined
+  const warningId = `${id}-pickup-warning`
   const selected = value ? placeById(value) : null
   const [query, setQuery] = useState<string | null>(null) // null = not typing, show the selected place
   const [open, setOpen] = useState(false)
   const [active, setActive] = useState(0)
 
-  const results = useMemo(() => {
-    const words = (query ?? '').toLowerCase().split(/\s+/).filter(Boolean)
-    return options.filter((p) => matches(p, words)).slice(0, MAX_RESULTS)
-  }, [query, options])
+  const words = (query ?? '').toLowerCase().split(/\s+/).filter(Boolean)
+  const matchesQuery = options.filter((p) => matches(p, words))
+  const results = (pickup && selected ? placesByDistance(selected, matchesQuery) : matchesQuery).slice(0, MAX_RESULTS)
 
   const pick = (p: Place) => {
     onChange(p.id)
@@ -67,7 +70,10 @@ export function PlaceSearch({
   }
 
   const showList = open && results.length > 0
-  const noResults = open && query && results.length === 0
+  const noResults = open && Boolean(query?.trim()) && results.length === 0
+  const customPickup = Boolean(pickup && isCustomPin(value))
+  const showPickupWarning = Boolean(pickup && (noResults || customPickup))
+  const describedBy = [hintId, showPickupWarning ? warningId : undefined].filter(Boolean).join(' ') || undefined
 
   return (
     <div className="field place-search">
@@ -88,13 +94,13 @@ export function PlaceSearch({
           autoComplete="off"
           spellCheck={false}
           aria-labelledby={labelledBy}
-          aria-describedby={hintId}
+          aria-describedby={describedBy}
           aria-expanded={showList}
           aria-controls={listId}
           aria-autocomplete="list"
           aria-activedescendant={showList ? `${listId}-${active}` : undefined}
           placeholder={placeholder}
-          value={query ?? selected?.area ?? ''}
+          value={query ?? (pickup ? selected?.name : selected?.area) ?? ''}
           onFocus={(e) => {
             e.target.select()
             setActive(0)
@@ -112,7 +118,8 @@ export function PlaceSearch({
           onKeyDown={onKeyDown}
         />
       </div>
-      <ul className="place-search__list" id={listId} role="listbox" hidden={!showList}>
+      <ul className="place-search__list" id={listId} role="listbox" aria-label={pickup ? 'Public pickup suggestions' : undefined} hidden={!showList}>
+        {pickup && !query?.trim() && <li className="place-search__caption" aria-hidden="true">Nearby public pickups</li>}
         {results.map((p, i) => (
           <li
             key={p.id}
@@ -132,12 +139,19 @@ export function PlaceSearch({
           </li>
         ))}
       </ul>
-      {noResults && (
+      {noResults && !pickup && (
         <span className="field__hint" role="status">
           No place matches “{query}”. Try a station, mall or campus, or drag the pin on the map.
         </span>
       )}
-      {hint && !noResults && (
+      {showPickupWarning && (
+        <div id={warningId} role="status">
+          <Callout tone="warning" icon="alert" title={noResults ? 'Choose a public pickup' : 'You chose a custom pickup'}>
+            <p>Meet in public. Avoid sharing your home address.</p>
+          </Callout>
+        </div>
+      )}
+      {hint && (pickup || !noResults) && (
         <span className="field__hint" id={hintId}>
           {hint}
         </span>

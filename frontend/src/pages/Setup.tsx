@@ -1,14 +1,18 @@
 import { useState, type FormEvent } from 'react'
 import { Navigate, useNavigate, useParams } from 'react-router-dom'
 import { Button, DayChips, Field, PrototypeBanner, SegmentedControl, Stepper } from '../components/ui'
+import { PlaceSearch } from '../components/PlaceSearch'
+import { RidePreferenceFields } from '../components/RidePreferenceFields'
 import { DEFAULT_DRIVER, DEFAULT_RIDER } from '../data/demo'
-import { PLACES } from '../data/places'
+import { readVerifiedDemoStudent } from '../data/studentVerification'
+import { PLACES, SEARCHABLE_PLACES, UNIVERSITY_CAMPUSES } from '../data/places'
 import { fromInputTime, toInputTime } from '../lib/format'
 import { useStore } from '../lib/store'
+import type { RidePreferences } from '../lib/ridePreferences'
 import type { Commuter, Day, Role } from '../lib/types'
 
-const meetingPoints = PLACES.filter((p) => p.kind === 'meeting')
-const destinations = PLACES.filter((p) => p.kind === 'destination')
+const meetingPoints = SEARCHABLE_PLACES.filter((p) => p.kind === 'meeting')
+
 
 export default function Setup() {
   const { role: roleParam } = useParams()
@@ -30,6 +34,14 @@ function SetupForm({ role }: { role: Role }) {
   const [days, setDays] = useState<Day[]>(initial.days)
   const [maxDetour, setMaxDetour] = useState(initial.role === 'driver' ? initial.maxDetour : DEFAULT_DRIVER.maxDetour)
   const [seats, setSeats] = useState(initial.role === 'driver' ? initial.seats : DEFAULT_DRIVER.seats)
+  const [verifiedStudent] = useState(readVerifiedDemoStudent)
+  const [ridePreferences, setRidePreferences] = useState<RidePreferences>({
+    gender: verifiedStudent ? verifiedStudent.gender : profile?.gender,
+    ridePreference: !verifiedStudent || verifiedStudent.gender === profile?.gender ? profile?.ridePreference : undefined,
+  })
+  const destinations = UNIVERSITY_CAMPUSES.some((campus) => campus.id === destinationId)
+    ? UNIVERSITY_CAMPUSES
+    : [...UNIVERSITY_CAMPUSES, ...PLACES.filter((place) => place.id === destinationId)]
   const [triedSubmit, setTriedSubmit] = useState(false)
 
   const daysError = triedSubmit && days.length === 0 ? 'Pick at least one day.' : undefined
@@ -38,7 +50,7 @@ function SetupForm({ role }: { role: Role }) {
     e.preventDefault()
     setTriedSubmit(true)
     if (days.length === 0) return
-    const base = { id: 'me', name: 'You', startId, destinationId, arriveBy, days }
+    const base = { id: 'me', name: 'You', startId, destinationId, arriveBy, days, ...ridePreferences }
     const next: Commuter =
       role === 'rider'
         ? { ...base, role: 'rider', blurb: DEFAULT_RIDER.blurb }
@@ -52,8 +64,8 @@ function SetupForm({ role }: { role: Role }) {
   return (
     <form className="page page--with-bar" onSubmit={submit} noValidate>
       <div className="stack">
-        <h1 className="title">Your regular trip</h1>
-        <p className="muted">We use this to find people on the same route at the same time. You can change it later.</p>
+        <h1 className="title">Your campus commute</h1>
+        <p className="muted">Find other students going to campus on the same days and at a similar time.</p>
       </div>
 
       <SegmentedControl<Role>
@@ -67,22 +79,17 @@ function SetupForm({ role }: { role: Role }) {
       />
 
       <div className="card stack-lg">
-        <Field
+        <PlaceSearch
           label={isRider ? 'Pickup meeting point' : 'Starting point'}
-          hint={isRider ? 'Pick a spot near home. Drivers only see the area until you both accept.' : 'Where you usually leave from. Riders only see the area.'}
-        >
-          {(p) => (
-            <select className="input" value={startId} onChange={(e) => setStartId(e.target.value)} {...p}>
-              {meetingPoints.map((pl) => (
-                <option key={pl.id} value={pl.id}>
-                  {pl.area}
-                </option>
-              ))}
-            </select>
-          )}
-        </Field>
+          hint={isRider ? 'Choose a public pickup nearby. Drivers see the general area until you both accept.' : 'Where you usually leave from. Riders only see the area.'}
+          value={startId}
+          onChange={setStartId}
+          options={meetingPoints}
+          pickup={isRider}
+          placeholder="Search a mall, station or neighbourhood"
+        />
 
-        <Field label="Destination">
+        <Field label="Campus destination">
           {(p) => (
             <select className="input" value={destinationId} onChange={(e) => setDestinationId(e.target.value)} {...p}>
               {destinations.map((pl) => (
@@ -94,7 +101,7 @@ function SetupForm({ role }: { role: Role }) {
           )}
         </Field>
 
-        <Field label="Need to arrive by" hint={isRider ? 'When your class or shift starts, minus the walk from drop-off.' : 'When you need to be there.'}>
+        <Field label="Need to arrive by" hint={isRider ? 'When class starts, minus the walk from drop-off.' : 'When you need to be there.'}>
           {(p) => (
             <input
               type="time"
@@ -123,6 +130,12 @@ function SetupForm({ role }: { role: Role }) {
             format={(v) => `${v} min`}
           />
           <Stepper label="Seats to offer" value={seats} onChange={setSeats} min={1} max={4} format={(v) => `${v} seat${v === 1 ? '' : 's'}`} />
+        </div>
+      )}
+
+      {verifiedStudent?.gender === 'woman' && (
+        <div className="card">
+          <RidePreferenceFields profile={ridePreferences} onChange={(patch) => setRidePreferences((current) => ({ ...current, ...patch }))} />
         </div>
       )}
 

@@ -4,7 +4,7 @@
 
 # Wanna be my routemate?
 
-Routemate is a clickable carpooling prototype with simulated drivers, riders, and ride requests. It runs in the browser without a backend.
+Routemate is a carpooling prototype for university students, starting at York University’s Keele campus. It uses fictional students and simulates ride requests. It runs in the browser without a backend.
 
 [Judge demo on GitHub Pages](https://zxcpivo.github.io/unhack-shenanigans/) · [Update Routemate with an LLM](AGENTS.md)
 
@@ -18,18 +18,19 @@ npm ci
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173) or use the URL Vite prints in the terminal. Click **Start the demo**. Press `Ctrl+C` in the terminal to stop the server.
+Open [http://localhost:5173](http://localhost:5173) or use the URL Vite prints in the terminal. Click **Get started**. Press `Ctrl+C` in the terminal to stop the server.
 
 ## Test the prototype
 
-Between runs, click **Restart demo** in the presenter controls beside the phone or below the mobile app. When the demo asks for an account, click **Fill in demo details**, then **Create account**.
+Between runs, click **Restart demo** in the presenter panel. On mobile, open the panel with **Demo controls**. On **Create your account**, select a fictional student record in the presenter panel, click **Fill in demo details**, then **Verify and create account**.
 
 | Flow | Steps | What to check |
 | --- | --- | --- |
 | Driver | Choose **I drive** and keep the defaults for York Keele, Downtown Brampton, and 8:00 AM on weekdays. | Your savings estimates 6 extra minutes and about $78 per month with three riders. Pick a few interests and check the match cards for topics you share. Continue through the shared route to **Route shared!** |
 | Rider | Choose **I need a ride** and keep the defaults for York Keele, Malton, and 8:00 AM on Monday, Wednesday, and Thursday. | Nine drivers appear. The suggested ride costs $3 and saves about 19 minutes. Continue through the shared route to **Request accepted!** |
-| Any trip | Pick any start, destination, time and days. | Matches always appear. **Preview: no riders found** on Your savings shows the no-match screen, which offers to change the starting point or arrival time. As a driver it also lists earlier arrival times that have riders; tapping one returns to Your savings with that time. **Preview: nobody selected** on Shared route shows that screen. |
-| Route management | From Home, add a route for another shift or choose **Add return route** from **View all routes**. Change the days and arrival time, save, then edit one route. | Both routes keep separate schedules and matches after reload. Home shows the next trip across both. **Can’t drive?** asks for a route before showing dates. |
+| Any trip | Pick any start, destination, time and days. | The demo fits its fictional students to the entered trip. Ride preferences still apply. **Preview: no riders found** in the presenter controls on Your savings shows the no-match screen, which offers to change the starting point or arrival time. As a driver it also lists earlier arrival times that have riders; tapping one returns to Your savings with that time. **Preview: nobody selected** in the presenter controls on Shared route shows that screen. |
+| Ride preferences | Verify the sample record marked **Woman listed**, then try **At least one other woman** and **Women only**. | Women-only excludes other profiles. On a driver route, each shared day must have a woman passenger when **At least one other woman** is active. Backups follow the preference too. |
+| Route management | From Home, add a route for another class day or choose **Add return route** from **View all routes**. Change the days and arrival time, save, then edit one route. | Both routes keep separate schedules and matches after reload. Home shows the next trip across both. **Can’t drive?** asks for a route before showing dates. |
 
 From `frontend/`, run `npm run lint` and `npm run build` to check the code. After building, `npm run preview` serves the production build locally, usually at [http://localhost:4173](http://localhost:4173).
 

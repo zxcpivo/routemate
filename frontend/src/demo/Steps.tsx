@@ -1,14 +1,16 @@
-import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react'
+import { useEffect, useMemo, useState, type CSSProperties, type FormEvent, type ReactNode } from 'react'
 import { Brand } from '../components/Brand'
 import { Icon, type IconName } from '../components/Icon'
 import { Avatar, Badge, Button, DayChips, Field, Stepper } from '../components/ui'
+import { RidePreferenceFields } from '../components/RidePreferenceFields'
 import { PlaceSearch } from '../components/PlaceSearch'
-import { AppleIcon, GoogleIcon } from '../components/SocialIcons'
-import { TimeWheel, Wheel } from '../components/TimeWheel'
-import { SEARCHABLE_PLACES, placeById } from '../data/places'
+import { TimeWheel } from '../components/TimeWheel'
+import { demoStudentById, verifyDemoStudent, type StudentDetails } from '../data/studentVerification'
+import { SEARCHABLE_PLACES, UNIVERSITY_CAMPUSES, placeById } from '../data/places'
 import { formatMoney, formatTime } from '../lib/format'
 import { distanceKm, driveMin, matchPair } from '../lib/matching'
 import { MAX_AGE, MIN_AGE, sharedInterests, type MatchProfile } from '../lib/affinity'
+import { activeRidePreference } from '../lib/ridePreferences'
 import type { Role } from '../lib/types'
 import { RouteMap } from './RouteMap'
 import { TripMap } from './TripMap'
@@ -18,6 +20,7 @@ import {
   MAX_DETOUR,
   ROLE_DEFAULTS,
   driverCandidates,
+  driverGroupMeetsPreference,
   meAsDriver,
   meAsRider,
   planRoute,
@@ -33,6 +36,7 @@ export type StepProps = {
   next: () => void
   goTo: (id: StepId) => void
   managing: boolean
+  previewEmpty: boolean
 }
 
 export type StepId = 'welcome' | 'role' | 'start' | 'home' | 'time' | 'pitch' | 'profile' | 'account' | 'choose' | 'route' | 'done' | 'routes' | 'backup'
@@ -57,7 +61,7 @@ export function StepLayout({
   secondary,
   className,
 }: {
-  title: ReactNode
+  title?: ReactNode
   lede?: ReactNode
   children?: ReactNode
   cta?: string
@@ -74,12 +78,12 @@ export function StepLayout({
   return (
     <form className={className ? `demo-step ${className}` : 'demo-step'} onSubmit={submit} noValidate>
       <div className="demo-body">
-        <div className="stack" style={{ gap: 'var(--space-2)' }}>
-          <h1 className="demo-title" tabIndex={-1}>
-            {title}
-          </h1>
-          {lede && <p className="demo-lede">{lede}</p>}
-        </div>
+        {(title || lede) && (
+          <div className="stack" style={{ gap: 'var(--space-2)' }}>
+            {title && <h1 className="demo-title" tabIndex={-1}>{title}</h1>}
+            {lede && <p className="demo-lede">{lede}</p>}
+          </div>
+        )}
         {children}
       </div>
       {(cta || secondary) && (
@@ -126,23 +130,6 @@ function Tile({
   )
 }
 
-/* ---------- Demo preview control ----------
-   The demo always finds matches. Screens that would only appear when something
-   goes wrong are reached with this button, so testers can still see them. */
-
-function DemoPreview({ text, label, onClick }: { text: string; label: string; onClick: () => void }) {
-  return (
-    <div className="demo-preview">
-      <span>
-        <Icon name="info" size={14} /> {text}
-      </span>
-      <Button size="sm" onClick={onClick}>
-        {label}
-      </Button>
-    </div>
-  )
-}
-
 /* ---------- 0. Welcome ---------- */
 
 export function Welcome({ next }: StepProps) {
@@ -156,8 +143,8 @@ export function Welcome({ next }: StepProps) {
           </span>
         </span>
       }
-      lede="Get to class or your shift on time with someone already making the same trip. Drivers share the cost of the drive. Riders get a reliable lift."
-      cta="Start the demo"
+      lede="Carpool to campus with other university students on your route. Get to class on time and share the cost of the drive."
+      cta="Get started"
       onSubmit={next}
     >
       <ul className="demo-points">
@@ -165,7 +152,7 @@ export function Welcome({ next }: StepProps) {
           <Icon name="clock" /> Matched on your exact arrival time
         </li>
         <li>
-          <Icon name="user" /> Find someone on your route you’ll have something in common with
+          <Icon name="user" /> Find a fellow student you’ll have something in common with
         </li>
         <li>
           <Icon name="car" /> Drivers set their own detour limit ({MAX_DETOUR} min by default)
@@ -174,9 +161,6 @@ export function Welcome({ next }: StepProps) {
           <Icon name="shield" /> Meeting points instead of home addresses
         </li>
       </ul>
-      <p className="demo-note">
-        <Icon name="info" size={14} /> Demo: the people and trips are made up, and nothing you enter leaves this device.
-      </p>
     </StepLayout>
   )
 }
@@ -221,68 +205,54 @@ export function RoleStep({ a, set, next, managing }: StepProps) {
 
 // Suggestions in order: places demo commuters use first, then other public spots.
 const START_OPTIONS = SEARCHABLE_PLACES.filter((p) => p.kind === 'meeting')
-const DESTINATION_OPTIONS = SEARCHABLE_PLACES.filter((p) => p.kind === 'destination')
 
 export function StartStep({ a, set, next, managing }: StepProps) {
   const isDriver = a.role === 'driver'
-  const startQuestion = isDriver ? 'Where do you start?' : 'Where can you be picked up?'
   const startId = a.startId || ROLE_DEFAULTS[a.role ?? 'driver'].startId
   const km = distanceKm(placeById(startId), placeById(a.destinationId))
   const min = Math.round(driveMin(placeById(startId), placeById(a.destinationId)))
   return (
     <StepLayout
-      title={<span id="start-q">{startQuestion}</span>}
-      lede={isDriver ? 'The area you usually leave from.' : 'Pick a public meeting point near you, like a station or plaza. Drivers never see your home address.'}
+      className="trip-setup"
+      title="Plan your trip"
       cta="Continue"
       ctaDisabled={!a.startId || a.startId === a.destinationId}
       onSubmit={next}
     >
       <PlaceSearch
-        labelledBy="start-q"
+        label={isDriver ? 'Starting point' : 'Public pickup point'}
         value={a.startId}
         onChange={(startId) => set({ startId })}
         options={managing ? SEARCHABLE_PLACES : START_OPTIONS}
-        placeholder="Search a station, mall or area"
+        pickup={!isDriver}
+        placeholder="Search a mall, station or neighbourhood"
       />
-      <h2 className="demo-subtitle" id="destination-q">
-        What is your destination?
-      </h2>
-      <PlaceSearch
-        labelledBy="destination-q"
-        value={a.destinationId}
-        onChange={(destinationId) => set({ destinationId })}
-        options={managing ? SEARCHABLE_PLACES : DESTINATION_OPTIONS}
-        icon="flag"
-        placeholder={managing ? "Search for a place" : "Search your campus or workplace"}
-      />
-      {managing && (
-        <Button size="sm" icon="swap" onClick={() => set({ startId: a.destinationId, destinationId: startId })}>
-          Swap start and destination
-        </Button>
-      )}
+      <div className="trip-setup__destination">
+        <PlaceSearch
+          label={managing ? 'Destination' : 'Campus'}
+          value={a.destinationId}
+          onChange={(destinationId) => set({ destinationId })}
+          options={managing ? SEARCHABLE_PLACES : UNIVERSITY_CAMPUSES}
+          icon="flag"
+          placeholder={managing ? 'Search for a place' : 'Search for your university campus'}
+        />
+        {managing && (
+          <Button size="sm" icon="swap" aria-label="Swap start and destination"
+            onClick={() => set({ startId: a.destinationId, destinationId: startId })}>
+            Swap
+          </Button>
+        )}
+      </div>
       {a.startId === a.destinationId && <p className="field__error">Choose two different places.</p>}
-      <div className="stack" style={{ gap: 'var(--space-2)' }}>
+      <div className="trip-setup__map">
         <TripMap
           startId={startId}
           destinationId={a.destinationId}
-          startLabel={isDriver ? 'Starting point' : 'Meeting point'}
+          startLabel={isDriver ? 'Starting point' : 'Pickup point'}
           onMoveStart={(id) => set({ startId: id })}
           onMoveDestination={(id) => set({ destinationId: id })}
         />
-        <p className="trip-map__caption">
-          <span>
-            <span className="trip-map__key trip-map__key--start" aria-hidden="true" /> {placeById(startId).area.split(',')[0]}
-          </span>
-          <span>
-            <span className="trip-map__key trip-map__key--end" aria-hidden="true" /> {placeById(a.destinationId).area.split(',')[0]}
-          </span>
-          <span className="num">
-            About {Math.round(km)} km · {min} min drive
-          </span>
-        </p>
-        <p className="demo-note">
-          <Icon name="info" size={14} /> Drag either pin to move it. Times are estimates.
-        </p>
+        <p className="muted small">Drag pins · About {Math.round(km)} km, {min} min</p>
       </div>
     </StepLayout>
   )
@@ -294,7 +264,6 @@ export function TimeStep({ a, set, next }: StepProps) {
   return (
     <StepLayout
       title="When do you need to be there?"
-      lede="Your class or shift start, minus the walk from drop-off. Drag to choose."
       cta="Find my matches"
       ctaDisabled={a.days.length === 0}
       onSubmit={next}
@@ -324,9 +293,8 @@ function earlierOptions(a: Answers) {
     })
 }
 
-export function PitchStep({ a, set, next, goTo }: StepProps) {
+export function PitchStep({ a, set, next, goTo, previewEmpty }: StepProps) {
   const isDriver = a.role === 'driver'
-  const [previewEmpty, setPreviewEmpty] = useState(false)
   const data = useMemo(() => {
     if (isDriver) {
       const me = meAsDriver({ ...a, age: undefined, interests: [] })
@@ -369,7 +337,7 @@ export function PitchStep({ a, set, next, goTo }: StepProps) {
                     className="time-option"
                     onClick={() => {
                       set({ arriveBy: o.time })
-                      setPreviewEmpty(false)
+                      goTo('pitch')
                     }}
                   >
                     <span className="time-option__time num">{formatTime(o.time)}</span>
@@ -392,21 +360,12 @@ export function PitchStep({ a, set, next, goTo }: StepProps) {
             <Icon name="search" size={40} />
           </div>
         )}
-        {previewEmpty && <DemoPreview text="Preview of the no-match screen." label="Back to my matches" onClick={() => setPreviewEmpty(false)} />}
       </StepLayout>
     )
   }
 
-  const emptyPreview = (
-    <DemoPreview
-      text="Demo always finds matches."
-      label={`Preview: no ${isDriver ? 'riders' : 'drivers'} found`}
-      onClick={() => setPreviewEmpty(true)}
-    />
-  )
   const plan = data.plan
   if (isDriver) {
-    const n = plan.riders.length
     return (
       <StepLayout title="Good news" cta="Continue" onSubmit={next}>
         <div className="pitch">
@@ -434,11 +393,6 @@ export function PitchStep({ a, set, next, goTo }: StepProps) {
             </span>
           </div>
         </div>
-        <p className="demo-note">
-          Based on {n} {n === 1 ? 'rider' : 'riders'} splitting the trip cost evenly with you, at an example $0.20/km for gas and running costs. You'll
-          never add more than {meAsDriver(a).maxDetour} minutes, and you can change that limit later.
-        </p>
-        {emptyPreview}
       </StepLayout>
     )
   }
@@ -482,17 +436,12 @@ export function PitchStep({ a, set, next, goTo }: StepProps) {
           </dd>
         </div>
       </dl>
-      <p className="demo-note">
-        Times are estimates. The contribution is the trip cost split evenly with the driver. For comparison, a TTC tap is $3.30.
-      </p>
-      {emptyPreview}
     </StepLayout>
   )
 }
 
 /* ---------- Profile ---------- */
 
-const AGES = Array.from({ length: MAX_AGE - MIN_AGE + 1 }, (_, i) => String(i + MIN_AGE))
 const INTERESTS = [
   ['🎵', 'Music'], ['🎮', 'Gaming'], ['🏀', 'Sports'], ['🎬', 'Movies & TV'],
   ['🎧', 'Podcasts'], ['📚', 'Reading'], ['🍳', 'Cooking'], ['✈️', 'Travel'],
@@ -504,17 +453,32 @@ export function ProfileStep({ a, set, next }: StepProps) {
   const age = a.age ?? MIN_AGE
   const interests = a.interests ?? []
   return (
-    <StepLayout className="profile-step" title="Make the miles fly" cta="Continue" onSubmit={next}>
+    <StepLayout cta="Continue" onSubmit={next}>
       <section className="profile-age" aria-labelledby="age-h">
-        <div>
-          <h2 id="age-h" className="demo-subtitle">Your age</h2>
-          <p className="muted small">Drag to choose · 18+</p>
+        <div className="row-between">
+          <h1 id="age-h" className="demo-title" tabIndex={-1}>
+            <label htmlFor="profile-age">Your age</label>
+          </h1>
+          <span className="profile-age__value num" aria-hidden="true">{age}</span>
         </div>
-        <div className="time-wheel age-wheel">
-          <span className="time-wheel__band" aria-hidden="true" />
-          <Wheel label="Age" items={AGES} index={age - MIN_AGE} min={MIN_AGE} onChange={(i) => set({ age: i + MIN_AGE })} />
+        <input
+          id="profile-age"
+          className="age-slider"
+          type="range"
+          min={MIN_AGE}
+          max={MAX_AGE}
+          value={age}
+          onChange={(event) => set({ age: event.currentTarget.valueAsNumber })}
+          style={{ '--age-progress': `${((age - MIN_AGE) / (MAX_AGE - MIN_AGE)) * 100}%` } as CSSProperties}
+        />
+        <div className="row-between profile-age__range muted num" aria-hidden="true">
+          <span>{MIN_AGE}</span>
+          <span>{MAX_AGE}</span>
         </div>
       </section>
+      {demoStudentById(a.verifiedStudentId)?.gender === 'woman' && (
+        <RidePreferenceFields profile={a} onChange={set} groupDriver={a.role === 'driver'} />
+      )}
       <section className="profile-interests" aria-labelledby="interests-h">
         <div className="row-between">
           <h2 id="interests-h" className="demo-subtitle">What are you into?</h2>
@@ -550,78 +514,54 @@ function MatchAffinity({ me, other }: { me: MatchProfile; other: MatchProfile })
 
 /* ---------- Account ---------- */
 
-export function AccountStep({ a, set, next }: StepProps) {
-  const [consent, setConsent] = useState(Boolean(a.name))
+export function AccountStep({ a, set, next, account, setAccount, consent, setConsent }: StepProps & {
+  account: StudentDetails
+  setAccount: (account: StudentDetails) => void
+  consent: boolean
+  setConsent: (consent: boolean) => void
+}) {
   const [tried, setTried] = useState(false)
-  const [loading, setLoading] = useState(false)
-  useEffect(() => {
-    if (!loading) return
-    const timer = window.setTimeout(next, 700) // simulated account creation
-    return () => window.clearTimeout(timer)
-  }, [loading, next])
-  const nameError = tried && !a.name.trim() ? 'Enter your first name.' : undefined
-  const emailError = tried && !/^\S+@\S+\.\S+$/.test(a.email) ? 'Enter a valid email.' : undefined
+  const validEmail = /^\S+@\S+\.\S+$/.test(account.email.trim())
+  const student = verifyDemoStudent(account)
+  const complete = Boolean(account.name.trim() && validEmail && account.studentId.trim())
   const consentError = tried && !consent ? 'Tick this box to continue.' : undefined
 
   const submit = () => {
     setTried(true)
-    if (!a.name.trim() || !/^\S+@\S+\.\S+$/.test(a.email) || !consent) return
-    setLoading(true)
-  }
-
-  // Simulated: the provider hands back a name and email. Consent is still the user's tick.
-  const social = () => {
-    set({ name: 'Alex Chen', email: 'alex.demo@example.com' })
-    setTried(true)
-    if (!consent) return
-    setLoading(true)
+    if (!complete || !consent || !student) return
+    set({
+      name: account.name.trim(),
+      verifiedStudentId: student.id,
+      gender: student.gender,
+      ridePreference: student.gender === 'woman' && (!a.verifiedStudentId || a.verifiedStudentId === student.id)
+        ? a.ridePreference
+        : undefined,
+    })
+    next()
   }
 
   return (
     <StepLayout
       title="Create your account"
-      lede="So your matches know who's picking them up, or who they're picking up."
-      cta="Create account"
-      loading={loading}
+      lede="Use your university email and student ID to verify that you’re a student."
+      cta="Verify and create account"
       onSubmit={submit}
-      secondary={
-        <Button
-          variant="ghost"
-          block
-          onClick={() => {
-            set({ name: 'Alex Chen', email: 'alex.demo@example.com' })
-            setConsent(true)
-          }}
-        >
-          Fill in demo details
-        </Button>
-      }
     >
-      <div className="stack" style={{ gap: 'var(--space-2)' }}>
-        <Button block onClick={social} disabled={loading}>
-          <AppleIcon /> Continue with Apple
-        </Button>
-        <Button block onClick={social} disabled={loading}>
-          <GoogleIcon /> Continue with Google
-        </Button>
-      </div>
-      <div className="or-divider" role="separator">
-        <span>or use your email</span>
-      </div>
-      <Field label="First and last name" error={nameError}>
-        {(p) => <input className="input" autoComplete="off" value={a.name} onChange={(e) => set({ name: e.target.value })} {...p} />}
+      <Field label="First and last name" error={tried && !account.name.trim() ? 'Enter your name.' : undefined}>
+        {(p) => <input className="input" autoComplete="off" value={account.name} onChange={(e) => setAccount({ ...account, name: e.target.value })} {...p} />}
       </Field>
-      <Field label="School or work email" hint="We'd use this to confirm you study or work there." error={emailError}>
-        {(p) => <input className="input" type="email" autoComplete="off" value={a.email} onChange={(e) => set({ email: e.target.value })} {...p} />}
+      <Field label="University email" error={tried && !validEmail ? 'Enter a valid university email.' : undefined}>
+        {(p) => <input className="input" type="email" autoComplete="off" value={account.email} onChange={(e) => setAccount({ ...account, email: e.target.value })} {...p} />}
       </Field>
+      <Field label="Student ID number" error={tried && !account.studentId.trim() ? 'Enter your student ID number.' : undefined}>
+        {(p) => <input className="input" autoComplete="off" value={account.studentId} onChange={(e) => setAccount({ ...account, studentId: e.target.value })} {...p} />}
+      </Field>
+      {tried && complete && !student && <p className="field__error" role="alert">We couldn’t verify that email and student ID together. Check both and try again.</p>}
       <label className="check">
         <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} aria-invalid={consentError ? true : undefined} />
         <span>Matches can see my first name, age, interests we share, and the area I start from. We share exact meeting points after we both accept.</span>
       </label>
       {consentError && <span className="field__error">{consentError}</span>}
-      <p className="demo-note">
-        <Icon name="info" size={14} /> Demo only: no account is created and nothing is sent.
-      </p>
     </StepLayout>
   )
 }
@@ -644,6 +584,8 @@ function ChoosePassengers({ a, set, next }: StepProps) {
 
   const selected = candidates.filter((r) => a.selectedIds.includes(r.id))
   const plan = planRoute(me, selected)
+  const preference = activeRidePreference(me)
+  const fitsPreference = driverGroupMeetsPreference(me, selected)
   const full = selected.length >= me.seats
   const toggle = (id: string) =>
     set({ selectedIds: a.selectedIds.includes(id) ? a.selectedIds.filter((x) => x !== id) : [...a.selectedIds, id] })
@@ -653,7 +595,7 @@ function ChoosePassengers({ a, set, next }: StepProps) {
       title={`Hi ${firstName(a.name)}, pick your passengers`}
       lede={`Up to ${me.seats} seats. We've picked the ones that fit best.`}
       cta={selected.length ? 'See my route' : 'Pick at least one'}
-      ctaDisabled={selected.length === 0 || plan.overLimit}
+      ctaDisabled={selected.length === 0 || plan.overLimit || !fitsPreference}
       onSubmit={next}
     >
       <Stepper
@@ -669,7 +611,7 @@ function ChoosePassengers({ a, set, next }: StepProps) {
       />
       <div className="stack" role="group" aria-label="Passengers">
         {candidates.map((r) => {
-          const m = matchPair(me, r)
+          const m = matchPair(me, r, true)
           const checked = a.selectedIds.includes(r.id)
           return (
             <Tile key={r.id} type="checkbox" name="passengers" checked={checked} disabled={!checked && full} onChange={() => toggle(r.id)}>
@@ -678,6 +620,7 @@ function ChoosePassengers({ a, set, next }: StepProps) {
                 <strong>{r.name}</strong>
                 <span>{r.blurb}</span>
                 <MatchAffinity me={me} other={r} />
+                {preference === 'another-woman' && r.gender === 'woman' && <span className="tile__meta">Woman</span>}
                 <span className="tile__meta">
                   <Icon name="pin" size={12} /> {placeById(r.startId).area.split(',')[0]} · +{m.detour} min · {m.sharedDays.join(' ')}
                 </span>
@@ -686,6 +629,10 @@ function ChoosePassengers({ a, set, next }: StepProps) {
           )
         })}
       </div>
+      {!fitsPreference && (
+        <p className="field__error" role="status">Choose at least one other woman for every day you pick up passengers.</p>
+      )}
+      {candidates.length === 0 && <p className="muted small">No passengers fit your current settings. Try adjusting your detour limit or schedule.</p>}
       <div className={`demo-summary${plan.overLimit ? ' demo-summary--warn' : ''}`} aria-live="polite">
         {plan.overLimit ? (
           <div className="demo-summary__warn">
@@ -713,7 +660,7 @@ function ChoosePassengers({ a, set, next }: StepProps) {
   )
 }
 
-function ChooseDriver({ a, set, next }: StepProps) {
+function ChooseDriver({ a, set, next, goTo, managing }: StepProps) {
   const me = meAsRider(a)
   const candidates = riderCandidates(me)
 
@@ -722,12 +669,26 @@ function ChooseDriver({ a, set, next }: StepProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  if (candidates.length === 0) {
+    return (
+      <StepLayout
+        title="No drivers match this route"
+        lede="Try a different meeting point or class schedule."
+        cta="Change my schedule"
+        onSubmit={() => goTo('time')}
+        secondary={!managing && activeRidePreference(me) !== 'any' && (
+          <Button variant="ghost" block onClick={() => goTo('profile')}>Review ride preferences</Button>
+        )}
+      />
+    )
+  }
+
   return (
     <StepLayout
       title={`Hi ${firstName(a.name)}, pick your driver`}
       lede="Same driver, same days, every week."
       cta="See my route"
-      ctaDisabled={a.selectedIds.length === 0}
+      ctaDisabled={!candidates.some((driver) => driver.id === a.selectedIds[0])}
       onSubmit={next}
     >
       <div className="stack" role="radiogroup" aria-label="Driver">
@@ -757,10 +718,9 @@ function ChooseDriver({ a, set, next }: StepProps) {
 
 /* ---------- 8. Route ---------- */
 
-export function RouteStep({ a, next, goTo }: StepProps) {
+export function RouteStep({ a, next, goTo, previewEmpty }: StepProps) {
   const route = getRide(a)
   const [sending, setSending] = useState(false)
-  const [previewEmpty, setPreviewEmpty] = useState(false)
   useEffect(() => {
     if (!sending) return
     const timer = window.setTimeout(next, 1100) // simulated acceptance
@@ -768,9 +728,7 @@ export function RouteStep({ a, next, goTo }: StepProps) {
   }, [sending, next])
   if (previewEmpty || !route) {
     return (
-      <StepLayout title="Pick a match first" lede="Your route appears once you've chosen who to ride with." cta="Back to matches" onSubmit={() => goTo('choose')}>
-        {previewEmpty && <DemoPreview text="Preview of the screen shown with nobody selected." label="Back to my route" onClick={() => setPreviewEmpty(false)} />}
-      </StepLayout>
+      <StepLayout title="Pick a match first" lede="Your route appears once you've chosen who to ride with." cta="Back to matches" onSubmit={() => goTo('choose')} />
     )
   }
   const { plan, others } = route
@@ -841,7 +799,6 @@ export function RouteStep({ a, next, goTo }: StepProps) {
           +{plan.detour} min to your drive. Each passenger pays {formatMoney(plan.share)} a ride, agreed up front.
         </p>
       )}
-      <DemoPreview text="Demo control." label="Preview: nobody selected" onClick={() => setPreviewEmpty(true)} />
     </StepLayout>
   )
 }
@@ -903,9 +860,6 @@ export function DoneStep({ a, next }: StepProps) {
           <Icon name="shield" /> Exact meeting points are now shared with your group only.
         </li>
       </ul>
-      <p className="demo-note">
-        <Icon name="info" size={14} /> Simulated for the demo.
-      </p>
     </StepLayout>
   )
 }

@@ -5,6 +5,7 @@ import { DEMO_DRIVERS, DEMO_RIDERS } from '../data/demo'
 import { pinId, placeById } from '../data/places'
 import { COST_PER_KM, EARLY_LIMIT_MIN, STOP_MIN, distanceKm, driveMin, matchPair } from '../lib/matching'
 import { compareAffinity, MIN_AGE, type MatchProfile } from '../lib/affinity'
+import { activeRidePreference, meetsRidePreference, type RidePreferences } from '../lib/ridePreferences'
 import type { Day, Driver, Rider, Role } from '../lib/types'
 
 export const MAX_DETOUR = 10 // default from approach.md; drivers can change it on the Choose matches screen
@@ -25,7 +26,7 @@ export type Trip = {
   maxDetour?: number // driver's detour limit in minutes; older saved answers may not have it
 }
 
-export type Answers = Trip & MatchProfile & { name: string; email: string }
+export type Answers = Trip & MatchProfile & RidePreferences & { name: string; verifiedStudentId?: string }
 
 export const DEFAULT_ANSWERS: Answers = {
   role: null,
@@ -34,7 +35,6 @@ export const DEFAULT_ANSWERS: Answers = {
   arriveBy: 8 * 60,
   days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
   name: '',
-  email: '',
   age: MIN_AGE,
   interests: [],
   selectedIds: [],
@@ -50,7 +50,7 @@ export const ROLE_DEFAULTS: Record<Role, Pick<Answers, 'startId' | 'arriveBy' | 
 export function meAsDriver(a: Answers): Driver {
   return {
     id: 'me', role: 'driver', name: a.name || 'You', blurb: '', car: 'Your car',
-    age: a.age, interests: a.interests,
+    age: a.age, interests: a.interests, gender: a.gender, ridePreference: a.ridePreference,
     startId: a.startId, destinationId: a.destinationId, arriveBy: a.arriveBy, days: a.days,
     maxDetour: a.maxDetour ?? MAX_DETOUR, seats: SEATS,
   }
@@ -59,7 +59,7 @@ export function meAsDriver(a: Answers): Driver {
 export function meAsRider(a: Answers): Rider {
   return {
     id: 'me', role: 'rider', name: a.name || 'You', blurb: '',
-    age: a.age, interests: a.interests,
+    age: a.age, interests: a.interests, gender: a.gender, ridePreference: a.ridePreference,
     startId: a.startId, destinationId: a.destinationId, arriveBy: a.arriveBy, days: a.days,
   }
 }
@@ -139,11 +139,11 @@ export function planRoute(driver: Driver, riders: Rider[], viewer: Role = 'drive
 }
 
 /* ---------- Demo cast ----------
-   The guided demo always finds people, whatever trip the tester enters. Each sample
+   The guided demo fits its student cast to the trip the tester enters. Each sample
    commuter is fitted to the tester's trip: same destination, an arrival up to 10 minutes
    after the tester's (so the group still arrives on the tester's time), and their shared days (or all of the tester's days). If their
    usual starting point still fails the matching rules, they are moved onto the tester's
-   route. The "no one matches" screen is shown with a preview button instead. */
+   route. Ride preferences still apply to the fitted cast. */
 
 const KM_PER_DEG = 111.32
 const ARRIVAL_SPREAD = [0, 5, 10, 0, 5, 10, 0, 5]
@@ -173,7 +173,7 @@ function castRiders(me: Driver): Rider[] {
     const shared = r.days.filter((d) => me.days.includes(d))
     // Riders start at or after the driver's time, so the group still arrives when the tester asked.
     const fitted: Rider = { ...r, destinationId: me.destinationId, arriveBy: me.arriveBy + pick(ARRIVAL_SPREAD, i), days: shared.length ? shared : me.days }
-    if (matchPair(me, fitted).ok) return fitted
+    if (matchPair(me, fitted, true).ok) return fitted
     const along = frame.len * ((i + 1) / (DEMO_RIDERS.length + 1))
     return { ...fitted, startId: frame.at(along, pick(SIDE_KM, i)) }
   })
@@ -192,7 +192,7 @@ function castDrivers(me: Rider): Driver[] {
 // People on the other side who pass all three matching rules, best first.
 export function driverCandidates(me: Driver): Rider[] {
   return castRiders(me)
-    .map((r) => matchPair(me, r))
+    .map((r) => matchPair(me, r, true))
     .filter((m) => m.ok)
     .sort((a, b) => compareAffinity(me, a.rider, b.rider) || a.detour - b.detour)
     .map((m) => m.rider)
@@ -206,13 +206,23 @@ export function riderCandidates(me: Rider): Driver[] {
     .map((m) => m.driver)
 }
 
-// Fill seats with the highest-ranked riders while the whole route stays within the detour limit.
+export function driverGroupMeetsPreference(driver: Driver, riders: Rider[]): boolean {
+  return driver.days.every((day) => {
+    const onBoard = riders.filter((rider) => rider.days.includes(day))
+    return onBoard.length === 0 || meetsRidePreference(driver, onBoard)
+  })
+}
+
+// Fill seats with eligible riders. When a driver needs another woman, establish coverage before adding other riders.
 export function suggestRiders(me: Driver, candidates: Rider[]): Rider[] {
   const picked: Rider[] = []
-  for (const r of candidates) {
+  const ranked = activeRidePreference(me) === 'another-woman'
+    ? [...candidates].sort((a, b) => Number(b.gender === 'woman') - Number(a.gender === 'woman'))
+    : candidates
+  for (const r of ranked) {
     if (picked.length >= me.seats) break
     const next = [...picked, r]
-    if (planRoute(me, next).detour <= me.maxDetour) picked.push(r)
+    if (driverGroupMeetsPreference(me, next) && !planRoute(me, next).overLimit) picked.push(r)
   }
   return picked
 }

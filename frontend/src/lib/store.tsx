@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { DEMO_DRIVERS, DEMO_RIDERS } from '../data/demo'
 import { matchPair, score, type MatchResult } from './matching'
+import { meetsRidePreference } from './ridePreferences'
 import type { Arrangement, Commuter, Day, Driver, Rider } from './types'
 
 // Prototype state: lives in this browser only (localStorage). No backend.
@@ -79,7 +80,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             backupId = backup ? backup.driver.id : null
           } else {
             const rider = DEMO_RIDERS.find((r) => r.id === s.arrangement!.partnerId)
-            const backup = rider && DEMO_DRIVERS.map((d) => matchPair(d, rider)).find((m) => m.ok && m.sharedDays.includes(day))
+            const driver = s.profile
+            const backup = rider && DEMO_DRIVERS.map((d) => matchPair(d, rider))
+              .find((m) => m.ok && m.sharedDays.includes(day) && meetsRidePreference(driver, [m.driver, rider]))
             backupId = backup ? backup.driver.id : null
           }
           return { ...s, arrangement: { ...s.arrangement, away: { day, backupId } } }

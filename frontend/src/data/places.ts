@@ -1,6 +1,5 @@
 // Meeting points and destinations around the GTA.
-// Riders pick a meeting point instead of a home address, which keeps
-// home addresses private and shortens the driver's detour.
+// Riders are encouraged to pick a public meeting point.
 
 export type Place = {
   id: string
@@ -74,9 +73,13 @@ export const EXTRA_PLACES: Place[] = [
 ]
 
 export const SEARCHABLE_PLACES: Place[] = [...PLACES, ...EXTRA_PLACES]
+const UNIVERSITY_IDS = ['york-keele', 'uoft-st-george', 'tmu', 'utm', 'utsc']
+export const UNIVERSITY_CAMPUSES = SEARCHABLE_PLACES.filter((place) => UNIVERSITY_IDS.includes(place.id))
 
 // A spot dropped on the map is stored as "pin:<lat>,<lng>", so saved answers stay plain strings.
 const PIN = /^pin:(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)$/
+
+export const isCustomPin = (id: string) => PIN.test(id)
 
 export const pinId = (lat: number, lng: number) => `pin:${lat.toFixed(4)},${lng.toFixed(4)}`
 
@@ -85,6 +88,10 @@ function crowKm(a: { lat: number; lng: number }, b: { lat: number; lng: number }
   const rad = (d: number) => (d * Math.PI) / 180
   const h = Math.sin(rad(b.lat - a.lat) / 2) ** 2 + Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(rad(b.lng - a.lng) / 2) ** 2
   return 2 * 6371 * Math.asin(Math.sqrt(h))
+}
+
+export function placesByDistance(origin: Place, places: Place[]): Place[] {
+  return [...places].sort((a, b) => crowKm(origin, a) - crowKm(origin, b))
 }
 
 export function nearestPlace(lat: number, lng: number, kind?: Place['kind']): { place: Place; km: number } {
