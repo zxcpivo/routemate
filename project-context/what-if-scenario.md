@@ -1,4 +1,4 @@
-					                      	Theft
+					                      			Theft
 T1: A passenger steals something from the driver’s car
 Before: How could we reduce the chance of it happening?
 We verify both drivers and riders with ID and a selfie match before their first trip. Before each ride, both sides see the other’s verified profile, vehicle plate and route. Ratings build trust over time, and new accounts have limits. Drivers are reminded to lock valuables away. Confirmed theft leads to a permanent ban and a police report, so being traceable discourages it.
@@ -21,7 +21,7 @@ When a report is filed, the app immediately preserves the trip data and notifies
 After: What happens afterward, and who handles the follow-up?
 A trained support team reviews both accounts alongside the trip data and decides, using the evidence rather than who reported first. If it is unclear, we do not punish either side, but we note the case, and repeated patterns lead to a review or ban. Both users can appeal. Anything that looks like a crime goes to police, who decide guilt, not the app. False reports are treated as a policy violation.
 
-Traffic
+													Traffic
 TR1: What if traffic means the passenger will miss their shift or class?
 Before: How could we reduce the chance of it happening? 
 We verify both drivers and riders with ID and a selfie match before their first trip. Before each ride, both sides see the other’s verified profile, vehicle plate and route. Ratings build trust over time, and new accounts have limits. Drivers are reminded to lock valuables away. Confirmed theft leads to a permanent ban and a police report, so being traceable discourages it.
@@ -55,7 +55,7 @@ With the driver’s consent, the phone’s sensors detect speeding, harsh brakin
 Rider reports and sensor data are reviewed together by our support team. Repeated or serious events lead to a warning, suspension or permanent ban, and the rider is refunded. Serious danger or an accident goes to police, and we share trip data on valid legal request. Drivers can see their own safe-driving history and appeal a decision if the data was wrong. Insurance handles any damage or injury claims.
 
 
-Privacy
+															Privacy
 P1: Someone learns your home address before you agree to ride together
 Before:
 Exact addresses are never shown before both sides accept a match. Until then, users only see an approximate area and a time window. Users can choose a public pickup spot (e.g. a nearby corner or transit stop) instead of their door.
