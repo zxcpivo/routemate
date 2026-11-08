@@ -1,4 +1,4 @@
-import { useId, useRef, type KeyboardEvent, type ReactNode } from 'react'
+import { useId, useRef, useState, type KeyboardEvent, type ReactNode } from 'react'
 import { Link, type LinkProps } from 'react-router-dom'
 import { Icon, type IconName } from './Icon'
 import { DAYS, type Day } from '../lib/types'
@@ -196,6 +196,8 @@ export function Stepper({
   max,
   step = 1,
   format = (v) => String(v),
+  editable,
+  unit,
 }: {
   label: string
   hint?: string
@@ -205,26 +207,78 @@ export function Stepper({
   max: number
   step?: number
   format?: (v: number) => string
+  editable?: boolean // type a number between the − and + buttons
+  unit?: string // shown after the typed number, e.g. "min"
 }) {
   const id = useId()
+  const [draft, setDraft] = useState<string | null>(null) // null = not typing
+  const [clamped, setClamped] = useState(false)
   const clamp = (v: number) => Math.min(max, Math.max(min, Math.round(v / step) * step))
+  const commit = () => {
+    if (draft === null) return
+    const n = Number(draft)
+    if (draft.trim() !== '' && Number.isFinite(n)) {
+      const v = clamp(n)
+      setClamped(v !== n)
+      onChange(v)
+    }
+    setDraft(null)
+  }
+  const nudge = (v: number) => {
+    setClamped(false)
+    onChange(clamp(v))
+  }
   return (
     <div className="field">
       <span className="field__label" id={`${id}-label`}>
         {label}
       </span>
       <div className="stepper" role="group" aria-labelledby={`${id}-label`}>
-        <button type="button" className="stepper__btn" aria-label={`Decrease ${label.toLowerCase()}`} disabled={value <= min} onClick={() => onChange(clamp(value - step))}>
+        <button type="button" className="stepper__btn" aria-label={`Decrease ${label.toLowerCase()}`} disabled={value <= min} onClick={() => nudge(value - step)}>
           −
         </button>
-        <span className="stepper__value" aria-live="polite">
-          {format(value)}
-        </span>
-        <button type="button" className="stepper__btn" aria-label={`Increase ${label.toLowerCase()}`} disabled={value >= max} onClick={() => onChange(clamp(value + step))}>
+        {editable ? (
+          <label className="stepper__value stepper__value--edit">
+            <input
+              className="stepper__input"
+              type="text"
+              inputMode="numeric"
+              aria-label={label}
+              aria-describedby={hint ? `${id}-hint` : undefined}
+              value={draft ?? String(value)}
+              onFocus={(e) => e.target.select()}
+              onChange={(e) => setDraft(e.target.value.replace(/[^\d]/g, ''))}
+              onBlur={commit}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault() // apply the number, don't submit the form
+                  commit()
+                } else if (e.key === 'Escape') {
+                  setDraft(null)
+                }
+              }}
+            />
+            {unit && <span aria-hidden="true">{unit}</span>}
+          </label>
+        ) : (
+          <span className="stepper__value" aria-live="polite">
+            {format(value)}
+          </span>
+        )}
+        <button type="button" className="stepper__btn" aria-label={`Increase ${label.toLowerCase()}`} disabled={value >= max} onClick={() => nudge(value + step)}>
           +
         </button>
       </div>
-      {hint && <span className="field__hint">{hint}</span>}
+      {clamped && (
+        <span className="field__error" role="status">
+          Choose between {format(min)} and {format(max)}.
+        </span>
+      )}
+      {hint && (
+        <span className="field__hint" id={`${id}-hint`}>
+          {hint}
+        </span>
+      )}
     </div>
   )
 }

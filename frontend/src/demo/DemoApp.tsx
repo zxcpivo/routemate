@@ -5,7 +5,6 @@ import { DEFAULT_ANSWERS, ROLE_DEFAULTS, type Answers } from './plan'
 import {
   AccountStep,
   ChooseStep,
-  DestinationStep,
   DoneStep,
   PitchStep,
   RoleStep,
@@ -25,12 +24,11 @@ type StepDef = { id: StepId; name: string; Component: (p: StepProps) => React.Re
 const STEPS: StepDef[] = [
   { id: 'welcome', name: 'Welcome', Component: Welcome, note: 'Routemate matches people who have a fixed start time with drivers already making the same trip.' },
   { id: 'role', name: 'Driver or rider', Component: RoleStep, note: 'One app for both sides. Drivers already make the trip; riders need a reliable way to make it.' },
-  { id: 'destination', name: 'Destination', Component: DestinationStep, note: 'We start with one campus. Matching works best when many people share a destination.' },
-  { id: 'start', name: 'Starting point', Component: StartStep, note: 'Riders choose a meeting point, not their home address. Homes stay private and detours stay short.' },
+  { id: 'start', name: 'Starting point & Destination', Component: StartStep, note: 'Riders choose a meeting point, not their home address. We start with one campus: matching works best when many people share a destination.' },
   { id: 'time', name: 'Arrival time', Component: TimeStep, note: 'Fixed start times are the core: every match has to get everyone there on time, on the same days each week.' },
   { id: 'pitch', name: 'Your savings', Component: PitchStep, note: 'Show the value before asking for an account: money back for drivers, time and reliability for riders.' },
   { id: 'account', name: 'Create account', Component: AccountStep, note: 'The account comes after the value is clear. Matches only see a first name and an approximate area.' },
-  { id: 'choose', name: 'Choose matches', Component: ChooseStep, note: 'Drivers choose who to pick up. Routemate keeps the whole route inside the 10-minute detour limit.' },
+  { id: 'choose', name: 'Choose matches', Component: ChooseStep, note: 'Drivers choose who to pick up and can adjust their detour limit (10 minutes by default). Routemate keeps the whole route inside it.' },
   { id: 'route', name: 'Shared route', Component: RouteStep, note: 'One shared route with pickup times. The cost is split evenly with the driver and agreed up front.' },
   { id: 'done', name: 'Done', Component: DoneStep, note: 'Same people, same days, every week. If the driver is away, Routemate finds a backup.' },
 ]
@@ -41,7 +39,12 @@ type Saved = { step: StepId; answers: Answers }
 function load(): Saved {
   try {
     const raw = localStorage.getItem(KEY)
-    if (raw) return JSON.parse(raw) as Saved
+    if (raw) {
+      const saved = JSON.parse(raw) as Saved
+      // Destination used to be its own step; it now shares the Starting point screen.
+      if ((saved.step as string) === 'destination') saved.step = 'start'
+      return saved
+    }
   } catch {
     /* ignore: start fresh */
   }

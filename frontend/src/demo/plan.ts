@@ -6,7 +6,8 @@ import { placeById } from '../data/places'
 import { COST_PER_KM, EARLY_LIMIT_MIN, STOP_MIN, distanceKm, driveMin, matchPair } from '../lib/matching'
 import type { Day, Driver, Rider, Role } from '../lib/types'
 
-export const MAX_DETOUR = 10 // the demo uses the suggested default from approach.md
+export const MAX_DETOUR = 10 // default from approach.md; drivers can change it on the Choose matches screen
+export const DETOUR_RANGE = { min: 5, max: 20 }
 export const SEATS = 3
 const WEEKS_PER_MONTH = 4.33
 // Rough transit-vs-car ratio from the 2021 Census (47.6 vs 25.5 min average one-way
@@ -22,6 +23,7 @@ export type Answers = {
   name: string
   email: string
   selectedIds: string[] // chosen passengers (driver) or chosen driver (rider)
+  maxDetour?: number // driver's detour limit in minutes; older saved answers may not have it
 }
 
 export const DEFAULT_ANSWERS: Answers = {
@@ -33,6 +35,7 @@ export const DEFAULT_ANSWERS: Answers = {
   name: '',
   email: '',
   selectedIds: [],
+  maxDetour: MAX_DETOUR,
 }
 
 // Defaults that give a good demo for each role.
@@ -45,7 +48,7 @@ export function meAsDriver(a: Answers): Driver {
   return {
     id: 'me', role: 'driver', name: a.name || 'You', blurb: '', car: 'Your car',
     startId: a.startId, destinationId: a.destinationId, arriveBy: a.arriveBy, days: a.days,
-    maxDetour: MAX_DETOUR, seats: SEATS,
+    maxDetour: a.maxDetour ?? MAX_DETOUR, seats: SEATS,
   }
 }
 

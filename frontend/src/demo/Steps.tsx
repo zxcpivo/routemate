@@ -1,14 +1,18 @@
 import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react'
 import { Brand } from '../components/Brand'
 import { Icon, type IconName } from '../components/Icon'
-import { Avatar, Badge, Button, DayChips, Field } from '../components/ui'
-import { placeById } from '../data/places'
+import { Avatar, Badge, Button, DayChips, Field, Stepper } from '../components/ui'
+import { PlaceSearch } from '../components/PlaceSearch'
+import { SEARCHABLE_PLACES, placeById } from '../data/places'
 import { formatMoney, formatTime, fromInputTime, toInputTime } from '../lib/format'
-import { matchPair } from '../lib/matching'
+import { distanceKm, driveMin, matchPair } from '../lib/matching'
 import type { Driver, Rider, Role } from '../lib/types'
 import { RouteMap } from './RouteMap'
+import { TripMap } from './TripMap'
 import {
+  DETOUR_RANGE,
   MAX_DETOUR,
+  ROLE_DEFAULTS,
   driverCandidates,
   meAsDriver,
   meAsRider,
@@ -27,7 +31,7 @@ export type StepProps = {
   restart: () => void
 }
 
-export type StepId = 'welcome' | 'role' | 'destination' | 'start' | 'time' | 'pitch' | 'account' | 'choose' | 'route' | 'done'
+export type StepId = 'welcome' | 'role' | 'start' | 'time' | 'pitch' | 'account' | 'choose' | 'route' | 'done'
 
 const firstName = (name: string) => name.split(' ')[0]
 
@@ -138,7 +142,7 @@ export function Welcome({ next }: StepProps) {
           <Icon name="clock" /> Matched on your exact arrival time
         </li>
         <li>
-          <Icon name="car" /> Never more than {MAX_DETOUR} extra minutes for drivers
+          <Icon name="car" /> Drivers set their own detour limit ({MAX_DETOUR} min by default)
         </li>
         <li>
           <Icon name="shield" /> Meeting points instead of home addresses
@@ -187,69 +191,72 @@ export function RoleStep({ a, set, next }: StepProps) {
   )
 }
 
-/* ---------- 2. Destination ---------- */
+/* ---------- 2. Starting point & destination ---------- */
 
-const DESTINATIONS = ['york-keele', 'humber-north', 'pearson-t1', 'north-york-centre']
-
-export function DestinationStep({ a, set, next }: StepProps) {
-  return (
-    <StepLayout title="Where are you going?" lede="Your campus or workplace." cta="Continue" onSubmit={next}>
-      <div className="stack" role="radiogroup" aria-label="Destination">
-        {DESTINATIONS.map((id) => {
-          const p = placeById(id)
-          return (
-            <Tile key={id} name="destination" checked={a.destinationId === id} onChange={() => set({ destinationId: id })}>
-              <span className="tile__icon tile__icon--sm">
-                <Icon name="flag" />
-              </span>
-              <span className="tile__text">
-                <strong>{p.area}</strong>
-              </span>
-            </Tile>
-          )
-        })}
-      </div>
-    </StepLayout>
-  )
-}
-
-/* ---------- 3. Start ---------- */
-
-const STARTS: { id: string; title: string; city: string }[] = [
-  { id: 'brampton-dt', title: 'Downtown', city: 'Brampton' },
-  { id: 'bramalea', title: 'Bramalea', city: 'Brampton' },
-  { id: 'malton', title: 'Malton', city: 'Mississauga' },
-  { id: 'square-one', title: 'City Centre', city: 'Mississauga' },
-  { id: 'rexdale', title: 'Rexdale', city: 'Etobicoke' },
-  { id: 'woodbridge', title: 'Woodbridge', city: 'Vaughan' },
-  { id: 'kipling', title: 'Kipling', city: 'Etobicoke' },
-  { id: 'maple', title: 'Maple', city: 'Vaughan' },
-]
+// Suggestions in order: places demo commuters use first, then other public spots.
+const START_OPTIONS = SEARCHABLE_PLACES.filter((p) => p.kind === 'meeting')
+const DESTINATION_OPTIONS = SEARCHABLE_PLACES.filter((p) => p.kind === 'destination')
 
 export function StartStep({ a, set, next }: StepProps) {
   const isDriver = a.role === 'driver'
+  const startQuestion = isDriver ? 'Where do you start?' : 'Where can you be picked up?'
+  const startId = a.startId || ROLE_DEFAULTS[a.role ?? 'driver'].startId
+  const km = distanceKm(placeById(startId), placeById(a.destinationId))
+  const min = Math.round(driveMin(placeById(startId), placeById(a.destinationId)))
   return (
     <StepLayout
-      title={isDriver ? 'Where do you start?' : 'Where can you be picked up?'}
-      lede={isDriver ? 'The area you usually leave from.' : 'Pick a meeting point near you. Drivers never see your home address.'}
+      title={<span id="start-q">{startQuestion}</span>}
+      lede={isDriver ? 'The area you usually leave from.' : 'Pick a public meeting point near you, like a station or plaza. Drivers never see your home address.'}
       cta="Continue"
+      ctaDisabled={!a.startId}
       onSubmit={next}
     >
-      <div className="tile-grid" role="radiogroup" aria-label={isDriver ? 'Starting point' : 'Meeting point'}>
-        {STARTS.map((o) => (
-          <Tile key={o.id} name="start" size="sm" checked={a.startId === o.id} onChange={() => set({ startId: o.id })}>
-            <span className="tile__text">
-              <strong>{o.title}</strong>
-              <span>{o.city}</span>
-            </span>
-          </Tile>
-        ))}
+      <PlaceSearch
+        labelledBy="start-q"
+        value={a.startId}
+        onChange={(startId) => set({ startId })}
+        options={START_OPTIONS}
+        placeholder="Search a station, mall or area"
+      />
+      <h2 className="demo-subtitle" id="destination-q">
+        What is your destination?
+      </h2>
+      <PlaceSearch
+        labelledBy="destination-q"
+        value={a.destinationId}
+        onChange={(destinationId) => set({ destinationId })}
+        options={DESTINATION_OPTIONS}
+        icon="flag"
+        placeholder="Search your campus or workplace"
+      />
+      <div className="stack" style={{ gap: 'var(--space-2)' }}>
+        <TripMap
+          startId={startId}
+          destinationId={a.destinationId}
+          startLabel={isDriver ? 'Starting point' : 'Meeting point'}
+          onMoveStart={(id) => set({ startId: id })}
+          onMoveDestination={(id) => set({ destinationId: id })}
+        />
+        <p className="trip-map__caption">
+          <span>
+            <span className="trip-map__key trip-map__key--start" aria-hidden="true" /> {placeById(startId).area.split(',')[0]}
+          </span>
+          <span>
+            <span className="trip-map__key trip-map__key--end" aria-hidden="true" /> {placeById(a.destinationId).area.split(',')[0]}
+          </span>
+          <span className="num">
+            About {Math.round(km)} km · {min} min drive
+          </span>
+        </p>
+        <p className="demo-note">
+          <Icon name="info" size={14} /> Drag either pin to move it. Times are estimates.
+        </p>
       </div>
     </StepLayout>
   )
 }
 
-/* ---------- 4. Time ---------- */
+/* ---------- 3. Time ---------- */
 
 const TIMES = [8 * 60, 8 * 60 + 30, 8 * 60 + 45, 9 * 60, 9 * 60 + 30, 10 * 60]
 
@@ -358,7 +365,7 @@ export function PitchStep({ a, next, goTo }: StepProps) {
         </div>
         <p className="demo-note">
           Based on {n} {n === 1 ? 'rider' : 'riders'} splitting the trip cost evenly with you, at an example $0.20/km for gas and running costs. You'll
-          never add more than {MAX_DETOUR} minutes.
+          never add more than {meAsDriver(a).maxDetour} minutes, and you can change that limit later.
         </p>
       </StepLayout>
     )
@@ -367,35 +374,44 @@ export function PitchStep({ a, next, goTo }: StepProps) {
   const times = riderTimes(meAsRider(a))
   const saved = times.transit - times.car
   return (
-    <StepLayout title="Good news" cta="Create my account" onSubmit={next}>
-      <div className="pitch">
-        <span className="pitch__label">Arrive by {formatTime(a.arriveBy)} and save about</span>
-        <span className="pitch__big num">
-          {saved}
-          <small> min</small>
-        </span>
-        <span className="pitch__label">each way compared with transit</span>
-      </div>
-      <div className="pitch-row">
-        <div className="pitch-chip">
-          <Icon name="dollar" />
-          <span>
-            <strong>{formatMoney(plan.share)}</strong> a ride
-          </span>
+    <StepLayout
+      title="Good news"
+      lede={`${data.count} ${data.count === 1 ? 'driver is' : 'drivers are'} already making your trip.`}
+      cta="Create my account"
+      onSubmit={next}
+    >
+      <div className="trip-compare">
+        <div className="trip-compare__row">
+          <span className="trip-compare__label">Your trip now</span>
+          <span className="trip-compare__value num">{times.transit} min</span>
+          <span className="trip-compare__sub">by transit, each way</span>
         </div>
-        <div className="pitch-chip">
-          <Icon name="car" />
-          <span>
-            <strong>
-              {data.count} {data.count === 1 ? 'driver' : 'drivers'}
-            </strong>{' '}
-            on your route
+        <div className="trip-compare__row trip-compare__row--new">
+          <span className="trip-compare__label">With a routemate</span>
+          <span className="trip-compare__value num">{times.car} min</span>
+          <span className="trip-compare__sub">
+            <Icon name="clock" size={14} /> {saved} min faster each way
           </span>
         </div>
       </div>
+      <dl className="pitch-facts">
+        <div>
+          <dt>
+            <Icon name="shield" /> Reliability
+          </dt>
+          <dd>Arrive by {formatTime(a.arriveBy)} with the same driver every week. Backup if they're away.</dd>
+        </div>
+        <div>
+          <dt>
+            <Icon name="dollar" /> Cost
+          </dt>
+          <dd>
+            <strong className="num">{formatMoney(plan.share)}</strong> a ride, agreed up front
+          </dd>
+        </div>
+      </dl>
       <p className="demo-note">
-        About {times.car} min by car vs roughly {times.transit} min by transit (estimate). The contribution is the trip cost split evenly with the driver,
-        agreed before your first ride. For comparison, a TTC tap is $3.30.
+        Times are estimates. The contribution is the trip cost split evenly with the driver. For comparison, a TTC tap is $3.30.
       </p>
     </StepLayout>
   )
@@ -418,6 +434,15 @@ export function AccountStep({ a, set, next }: StepProps) {
     window.setTimeout(next, 700) // simulated account creation
   }
 
+  // Simulated: the provider hands back a name and email. Consent is still the user's tick.
+  const social = () => {
+    set({ name: 'Alex Chen', email: 'alex.demo@example.com' })
+    setTried(true)
+    if (!consent) return
+    setLoading(true)
+    window.setTimeout(next, 700)
+  }
+
   return (
     <StepLayout
       title="Create your account"
@@ -438,6 +463,17 @@ export function AccountStep({ a, set, next }: StepProps) {
         </Button>
       }
     >
+      <div className="stack" style={{ gap: 'var(--space-2)' }}>
+        <Button block onClick={social} disabled={loading}>
+          Continue with Apple
+        </Button>
+        <Button block onClick={social} disabled={loading}>
+          Continue with Google
+        </Button>
+      </div>
+      <div className="or-divider" role="separator">
+        <span>or use your email</span>
+      </div>
       <Field label="First and last name" error={nameError}>
         {(p) => <input className="input" autoComplete="off" value={a.name} onChange={(e) => set({ name: e.target.value })} {...p} />}
       </Field>
@@ -486,6 +522,17 @@ function ChoosePassengers({ a, set, next }: StepProps) {
       ctaDisabled={selected.length === 0 || plan.overLimit}
       onSubmit={next}
     >
+      <Stepper
+        label="Detour limit"
+        hint="The most extra time you'll add to your drive for pickups."
+        value={me.maxDetour}
+        min={DETOUR_RANGE.min}
+        max={DETOUR_RANGE.max}
+        format={(v) => `${v} min`}
+        editable
+        unit="min"
+        onChange={(maxDetour) => set({ maxDetour })}
+      />
       <div className="stack" role="group" aria-label="Passengers">
         {candidates.map((r) => {
           const m = matchPair(me, r)
@@ -506,9 +553,16 @@ function ChoosePassengers({ a, set, next }: StepProps) {
       </div>
       <div className={`demo-summary${plan.overLimit ? ' demo-summary--warn' : ''}`} aria-live="polite">
         {plan.overLimit ? (
-          <>
-            <Icon name="alert" /> +{plan.detour} min is over your {MAX_DETOUR} min limit. Remove someone.
-          </>
+          <div className="demo-summary__warn">
+            <span>
+              <Icon name="alert" /> +{plan.detour} min is over your {me.maxDetour} min limit. Remove someone or raise the limit.
+            </span>
+            {plan.detour <= DETOUR_RANGE.max && (
+              <Button size="sm" variant="primary" onClick={() => set({ maxDetour: plan.detour })}>
+                Raise my limit to {plan.detour} min
+              </Button>
+            )}
+          </div>
         ) : (
           <>
             <span>

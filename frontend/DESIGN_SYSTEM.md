@@ -73,7 +73,7 @@ The [Routemate logo](../assets/brand/routemate-logo.svg) pairs a smiling car on 
 | **Field** | label, hint, error | error (border + message) | Label tied with `htmlFor`; hint and error via `aria-describedby` |
 | **Select / TimeInput** | Native controls styled to match | disabled, error | Native semantics |
 | **DayChips** | Days, selected | selected, focus | `role="group"` + toggle buttons with `aria-pressed` |
-| **Stepper** | min, max, step, unit | at min / max disables − / + | Buttons labelled "Decrease …" / "Increase …"; value in `aria-live="polite"` |
+| **Stepper** | min, max, step, format; `editable` + `unit` to type a value | at min / max disables − / + | Buttons labelled "Decrease …" / "Increase …"; value in `aria-live="polite"` |
 | **Avatar** | initials, tone | — | `aria-hidden`, name always shown as text next to it |
 | **Badge** | `neutral` · `success` · `warning` · `danger` · `info` | — | Text label always present |
 | **Stat** | label, value, tone | — | Rendered as `<dl>` pair |
@@ -90,14 +90,16 @@ Styles in [`src/styles/demo.css`](src/styles/demo.css), code in [`src/demo/`](sr
 |---|---|---|---|
 | **PhoneFrame + PresenterPanel** | Frame and side panel from 900px up; full screen below | Current / done step in the panel | Panel is an `<aside>`; current step has `aria-current="step"` |
 | **StepLayout** | title, lede, primary CTA, secondary action | CTA disabled, loading | Each step is a `<form>`, so Enter continues; heading gets focus on each new step |
-| **ProgressBar** | step / total | — | `role="progressbar"` with "Step n of 8: name" |
+| **ProgressBar** | step / total | — | `role="progressbar"` with "Step n of 7: name" |
 | **Tile** | `radio` · `checkbox`; `sm` · `md` · `lg` | selected (primary border + soft fill + check), disabled, focus | Native radio / checkbox inside a `<label>` |
 | **Pitch** | big number, label above and below | — | Plain text; the number is never the only label |
-| **LiveSummary** | detour + savings | over limit (warning tone, CTA blocked) | `aria-live="polite"` |
+| **LiveSummary** | detour + savings | over limit (warning tone, CTA blocked, “Raise my limit to … min” button) | `aria-live="polite"` |
+| **PlaceSearch** | label or `labelledBy`, places, icon | open list, active option, no results | ARIA combobox: arrow keys move, Enter picks without submitting the step, Escape closes |
+| **TripMap** | start, destination, move handlers | dragging (dashed straight line), road route | Region with a label; pins are focusable and the search boxes are the keyboard alternative to dragging. Uses OpenStreetMap tiles (inverted in dark mode) |
 | **RouteMap** | stops | — | `role="img"` with every stop and time in the label; drawn in SVG, no map tiles or network |
 | **Timeline** | stops with times | start, pickup (accent), end (filled) | Ordered list |
 
-**Demo rules:** one question per screen, always a sensible answer filled in, one primary button at the bottom, and a visible "made up / simulated" note wherever people or accounts appear.
+**Demo rules:** one question per screen (Starting point & Destination pairs two closely linked ones), always a sensible answer filled in, one primary button at the bottom, and a visible "made up / simulated" note wherever people or accounts appear.
 
 ### Do and don't
 

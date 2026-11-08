@@ -169,6 +169,31 @@
   color: var(--color-text-muted);
 }
 
+/* Second question on a screen (Starting point & Destination) */
+.demo-subtitle {
+  font-size: var(--text-xl);
+  line-height: var(--leading-xl);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-top: var(--space-2);
+}
+
+/* "or use your email" between social sign-in and the form */
+.or-divider {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.or-divider::before,
+.or-divider::after {
+  content: '';
+  flex: 1;
+  border-top: 1px solid var(--color-border);
+}
+
 .demo-note {
   display: flex;
   gap: var(--space-2);
@@ -405,6 +430,89 @@
 }
 
 /* ---------- Pitch ---------- */
+
+/* Rider: original trip time, then the time with a routemate */
+.trip-compare {
+  display: grid;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+.trip-compare__row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  column-gap: var(--space-3);
+  padding: var(--space-4);
+}
+
+.trip-compare__row + .trip-compare__row {
+  border-top: 1px solid var(--color-border);
+}
+
+.trip-compare__row--new {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.trip-compare__label {
+  font-size: var(--text-md);
+  font-weight: 600;
+}
+
+.trip-compare__value {
+  grid-row: span 2;
+  align-self: center;
+  font-size: var(--text-2xl);
+  line-height: var(--leading-2xl);
+  font-weight: 800;
+}
+
+.trip-compare__row:not(.trip-compare__row--new) .trip-compare__value {
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+}
+
+.trip-compare__sub {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+  line-height: var(--leading-sm);
+  opacity: 0.9;
+}
+
+.pitch-facts {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.pitch-facts > div {
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+
+.pitch-facts dt {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 600;
+}
+
+.pitch-facts dt svg {
+  color: var(--color-primary);
+}
+
+.pitch-facts dd {
+  margin: var(--space-1) 0 0;
+  font-size: var(--text-sm);
+  line-height: var(--leading-sm);
+  color: var(--color-text-muted);
+}
+
 .pitch {
   display: flex;
   flex-direction: column;
@@ -491,6 +599,24 @@
   background: var(--color-warning-soft);
   color: var(--color-warning);
   font-weight: 600;
+}
+
+.demo-summary__warn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.demo-summary__warn > span {
+  display: flex;
+  gap: var(--space-2);
+  align-items: flex-start;
+}
+
+.demo-summary__warn svg {
+  flex: none;
+  margin-top: 1px;
 }
 
 /* ---------- Route map ---------- */
@@ -673,4 +799,117 @@
 
 .presenter .btn {
   align-self: flex-start;
+}
+
+/* ---------- TripMap (Leaflet, Starting point & Destination) ---------- */
+.trip-map {
+  height: 240px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+  background: var(--color-surface-sunken);
+  font-family: var(--font-sans);
+  z-index: 0; /* keep Leaflet's panes under the search list */
+}
+
+.trip-map .leaflet-control-attribution {
+  font-size: 10px;
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+}
+
+.trip-map .leaflet-control-attribution a {
+  color: var(--color-text-muted);
+}
+
+.trip-map .leaflet-bar a {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+
+/* OSM tiles are light only: invert them to match dark mode. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .trip-map .leaflet-tile-pane {
+    filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(0.9);
+  }
+}
+
+:root[data-theme='dark'] .trip-map .leaflet-tile-pane {
+  filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(0.9);
+}
+
+.trip-map__route {
+  stroke: var(--color-primary);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+
+.trip-map__route--estimate {
+  stroke-dasharray: 2 10;
+}
+
+.trip-pin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-pill);
+  border: 3px solid var(--color-surface);
+  box-shadow: var(--shadow-2);
+  cursor: grab;
+}
+
+.trip-pin--start {
+  background: var(--color-accent);
+}
+
+.trip-pin--end {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.leaflet-dragging .trip-pin {
+  cursor: grabbing;
+}
+
+.leaflet-marker-icon:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-pill);
+}
+
+.trip-map__caption {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  font-size: var(--text-sm);
+  line-height: var(--leading-sm);
+}
+
+.trip-map__caption > span {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.trip-map__caption > span:last-child {
+  color: var(--color-text-muted);
+}
+
+.trip-map__key {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-pill);
+}
+
+.trip-map__key--start {
+  background: var(--color-accent);
+}
+
+.trip-map__key--end {
+  background: var(--color-primary);
 }

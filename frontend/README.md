@@ -1,6 +1,6 @@
 # Routemate frontend (clickable prototype)
 
-The home page is a **guided demo** for judges: one question per screen, from "driver or rider?" to a shared route. Every screen has an answer filled in, so you can tap straight through in about a minute, or change answers to try your own trip.
+The home page is a **guided demo** for judges: one or two questions per screen, from "driver or rider?" to a shared route. Every screen has an answer filled in, so you can tap straight through in about a minute, or change answers to try your own trip.
 
 Everything runs in the browser. There is no backend: the people and trips are made up (`src/data/demo.ts`), accounts and requests are simulated, and nothing typed in leaves the device.
 
@@ -16,20 +16,19 @@ On a laptop or projector (900px wide or more) the demo shows inside a phone fram
 |---|---|---|
 | 0 | Welcome | "Wanna be my routemate?" and three promises |
 | 1 | Driver or rider | Tap one; it moves on by itself |
-| 2 | Destination | York Keele is selected |
-| 3 | Starting point | Drivers: where they leave from. Riders: a meeting point, never a home address |
-| 4 | Arrival time and days | Time chips, or any time |
-| 5 | Your savings | Driver: "save about $78/month on gas, +9 min to your drive". Rider: time saved vs transit and cost per ride |
-| 6 | Create account | Name, email, consent. **Fill in demo details** does it in one tap |
-| 7 | Choose matches | Driver picks up to 3 passengers; the detour and savings update live and block anything over 10 minutes. Rider picks a driver |
-| 8 | Shared route | Drawn map, pickup times, days and money |
-| 9 | Done | Everyone accepted (simulated) and what happens each week |
+| 2 | Starting point & Destination | Type to search a start (riders: a public meeting point, never a home address) and a destination, or drag the pins on the map. Prefilled with the role's default and York Keele |
+| 3 | Arrival time and days | Time chips, or any time |
+| 4 | Your savings | Driver: "save about $78/month on gas, +9 min to your drive". Rider: trip time by transit, then with a routemate, plus reliability and cost per ride |
+| 5 | Create account | Continue with Apple or Google (simulated), or name and email. Consent is always required. **Fill in demo details** does it in one tap |
+| 6 | Choose matches | Driver picks up to 3 passengers and can type or step the detour limit (10 minutes by default); the detour and savings update live and block anything over the limit, with a **Raise my limit** button to accept the extra time. Rider picks a driver |
+| 7 | Shared route | Drawn map, pickup times, days and money |
+| 8 | Done | Everyone accepted (simulated) and what happens each week |
 
 **Good demo paths**
 
 - **Driver:** I drive → Downtown Brampton → 9:00 AM, Mon–Fri. 5 riders on the route, 3 picked, +9 min, about $78 a month.
 - **Rider:** I need a ride → Malton → 8:45 AM, Mon/Wed/Thu. 3 drivers, $2.50 a ride, about 19 min faster than transit.
-- **No match:** choose **Maple** as the starting point. The app says so plainly and offers to change the start or the time.
+- **No match:** type **Maple** in the starting point search. The app says so plainly and offers to change the start or the time.
 
 **Restart:** the button on the last screen, or **Restart demo** in the side panel.
 
