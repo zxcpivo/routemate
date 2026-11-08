@@ -9,6 +9,45 @@ const W = 340
 const H = 220
 const PAD = 34
 
+// Label placement: two lines (place, time) beside each stop. Try right, then left,
+// nudged up or down, and keep the first spot that stays inside the map without
+// covering another label or stop. Widths are estimates for the 11px / 10px text.
+type Box = { l: number; r: number; t: number; b: number }
+type Spot = { x: number; y: number; anchor: 'start' | 'end' }
+
+const overlaps = (a: Box, b: Box) => a.l < b.r && b.l < a.r && a.t < b.b && b.t < a.b
+
+function placeLabels(points: { x: number; y: number }[], labels: { place: string; time: string }[]): Spot[] {
+  const markers: Box[] = points.map((p) => ({ l: p.x - 12, r: p.x + 12, t: p.y - 12, b: p.y + 12 }))
+  const placed: Box[] = []
+  return points.map((p, i) => {
+    const w = Math.max(labels[i].place.length * 7.2, labels[i].time.length * 6.2) + 2
+    const sides: Spot['anchor'][] = p.x > W * 0.62 ? ['end', 'start'] : ['start', 'end']
+    const candidates: { spot: Spot; box: Box }[] = []
+    for (const dy of [0, 16, -16, 30, -30, 44, -44, 58, -58]) {
+      for (const anchor of sides) {
+        const x = anchor === 'start' ? p.x + 15 : p.x - 15
+        const y = p.y - 2 + dy
+        const l = anchor === 'start' ? x : x - w
+        candidates.push({ spot: { x, y, anchor }, box: { l, r: l + w, t: y - 11, b: y + 15 } })
+      }
+    }
+    const inside = (b: Box) => b.l >= 4 && b.r <= W - 4 && b.t >= 4 && b.b <= H - 4
+    const free = (b: Box) => !placed.some((o) => overlaps(o, b)) && !markers.some((m, j) => j !== i && overlaps(m, b))
+    const best = candidates.find((c) => inside(c.box) && free(c.box)) ?? candidates.find((c) => inside(c.box))
+    if (best) {
+      placed.push(best.box)
+      return best.spot
+    }
+    // Nothing fits: keep the label inside the map edges at least.
+    const anchor = sides[0]
+    const x = anchor === 'start' ? Math.min(p.x + 15, W - 4 - w) : Math.max(p.x - 15, 4 + w)
+    const y = Math.min(Math.max(p.y - 2, 15), H - 19)
+    placed.push({ l: anchor === 'start' ? x : x - w, r: anchor === 'start' ? x + w : x, t: y - 11, b: y + 15 })
+    return { x, y, anchor }
+  })
+}
+
 export function RouteMap({ stops }: { stops: Stop[] }) {
   const pts = stops.map((s) => placeById(s.placeId))
   const lats = pts.map((p) => p.lat)
@@ -34,6 +73,8 @@ export function RouteMap({ stops }: { stops: Stop[] }) {
   const path = xy.map((p, i) => `${i ? 'L' : 'M'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ')
   const first = xy[0]
   const last = xy[xy.length - 1]
+  const labels = stops.map((s) => ({ place: placeById(s.placeId).area.split(',')[0], time: formatTime(s.time) }))
+  const spots = placeLabels(xy, labels)
 
   // Other meeting points nearby, drawn faintly for context.
   const context = PLACES.map((p) => ({ p, ...project(p.lat, p.lng) })).filter(
@@ -64,8 +105,7 @@ export function RouteMap({ stops }: { stops: Stop[] }) {
 
       {stops.map((s, i) => {
         const { x, y } = xy[i]
-        const labelLeft = x > W * 0.62
-        const place = placeById(s.placeId)
+        const spot = spots[i]
         return (
           <g key={i}>
             {s.kind === 'start' && <circle cx={x} cy={y} r={8} className="route-map__start" />}
@@ -83,11 +123,11 @@ export function RouteMap({ stops }: { stops: Stop[] }) {
                 <path d={`M${x - 3.5} ${y + 5}V${y - 5}h7l-1.5 2.5 1.5 2.5h-7`} className="route-map__flag" />
               </>
             )}
-            <text x={labelLeft ? x - 15 : x + 15} y={y - 2} textAnchor={labelLeft ? 'end' : 'start'} className="route-map__label">
-              {place.area.split(',')[0]}
+            <text x={spot.x} y={spot.y} textAnchor={spot.anchor} className="route-map__label">
+              {labels[i].place}
             </text>
-            <text x={labelLeft ? x - 15 : x + 15} y={y + 11} textAnchor={labelLeft ? 'end' : 'start'} className="route-map__time">
-              {formatTime(s.time)}
+            <text x={spot.x} y={spot.y + 13} textAnchor={spot.anchor} className="route-map__time">
+              {labels[i].time}
             </text>
           </g>
         )

@@ -19,9 +19,14 @@ function Wheel({ label, items, index, onChange }: { label: string; items: string
   })
 
   // Line up with the value from outside (first render, keyboard, other wheels).
+  // That scroll is ours, so it must never be saved back as a new choice.
+  const selfScroll = useRef(false)
   useEffect(() => {
     const node = el.current
-    if (node && Math.round(node.scrollTop / ROW) !== index) node.scrollTop = index * ROW
+    if (node && Math.round(node.scrollTop / ROW) !== index) {
+      selfScroll.current = true
+      node.scrollTop = index * ROW
+    }
   }, [index])
 
   useEffect(() => () => window.clearTimeout(settle.current), [])
@@ -39,6 +44,10 @@ function Wheel({ label, items, index, onChange }: { label: string; items: string
 
   const onScroll = () => {
     setLive(rowAt())
+    if (selfScroll.current) {
+      selfScroll.current = false
+      return
+    }
     if (!drag.current) commitSoon()
   }
 

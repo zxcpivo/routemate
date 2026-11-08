@@ -28,7 +28,7 @@ Between runs, click **Restart demo** in the desktop side panel or **Restart the 
 | --- | --- | --- |
 | Driver | Choose **I drive** and keep the defaults for York Keele, Downtown Brampton, and 8:00 AM on weekdays. | Eight riders appear. The three suggested riders add 6 minutes and save about $78 per month. Continue through the shared route to **Route shared!** |
 | Rider | Choose **I need a ride** and keep the defaults for York Keele, Malton, and 8:00 AM on Monday, Wednesday, and Thursday. | Nine drivers appear. The suggested ride costs $3 and saves about 19 minutes. Continue through the shared route to **Request accepted!** |
-| Any trip | Pick any start, destination, time and days. | Matches always appear. **Preview: no riders found** on Your savings shows the no-match screen, which offers to change the starting point or arrival time. **Preview: nobody selected** on Shared route shows that screen. |
+| Any trip | Pick any start, destination, time and days. | Matches always appear. **Preview: no riders found** on Your savings shows the no-match screen, which offers to change the starting point or arrival time. As a driver it also lists earlier arrival times that have riders; tapping one returns to Your savings with that time. **Preview: nobody selected** on Shared route shows that screen. |
 
 From `frontend/`, run `npm run lint` and `npm run build` to check the code. After building, `npm run preview` serves the production build locally, usually at [http://localhost:4173](http://localhost:4173).
 

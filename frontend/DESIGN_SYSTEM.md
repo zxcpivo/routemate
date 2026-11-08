@@ -68,7 +68,7 @@ The [Routemate logo](../assets/brand/routemate-logo.svg) pairs a smiling car on 
 |---|---|---|---|
 | **AppHeader** | Logo, nav links, role badge | Active link | `<header>`, `<nav aria-label="Main">`, `aria-current="page"` |
 | **PrototypeBanner** | — | — | `role="note"` |
-| **Button** | `primary` · `secondary` · `ghost` · `danger`; `sm` · `md` · `lg`; `block`; `loading` | hover, active, disabled, loading (spinner, label kept) | Native `<button>`; `aria-busy` while loading |
+| **Button** | `primary` · `secondary` · `ghost` · `danger`; `sm` · `md` · `lg`; `block`; `loading` | hover, active, disabled, loading (spinner, label kept); long labels wrap onto more lines and never leave the button | Native `<button>`; `aria-busy` while loading |
 | **SegmentedControl** | Options list | selected, focus | `role="radiogroup"`, each option `role="radio"`, arrow keys move selection |
 | **Field** | label, hint, error | error (border + message) | Label tied with `htmlFor`; hint and error via `aria-describedby` |
 | **Select** | Native control styled to match | disabled, error | Native semantics |
@@ -99,7 +99,7 @@ Styles in [`src/styles/demo.css`](src/styles/demo.css), code in [`src/demo/`](sr
 | **LiveSummary** | detour + savings | over limit (warning tone, CTA blocked, “Raise my limit to … min” button) | `aria-live="polite"` |
 | **PlaceSearch** | label or `labelledBy`, places, icon | open list, active option, no results | ARIA combobox: arrow keys move, Enter picks without submitting the step, Escape closes |
 | **TripMap** | start, destination, move handlers | dragging (dashed straight line), road route | Region with a label; pins are focusable and the search boxes are the keyboard alternative to dragging. Uses OpenStreetMap tiles (inverted in dark mode) |
-| **RouteMap** | stops | — | `role="img"` with every stop and time in the label; drawn in SVG, no map tiles or network |
+| **RouteMap** | stops | — | `role="img"` with every stop and time in the label; drawn in SVG, no map tiles or network. Labels pick the first spot (right or left, nudged up or down) that stays inside the map and clear of other labels and stops |
 | **Timeline** | stops with times | start, pickup (accent), end (filled) | Ordered list |
 
 **Demo rules:** one question per screen (Starting point & Destination pairs two closely linked ones), always a sensible answer filled in, one primary button at the bottom, and a visible "made up / simulated" note wherever people or accounts appear.

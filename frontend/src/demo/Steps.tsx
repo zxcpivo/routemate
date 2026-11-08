@@ -11,6 +11,7 @@ import { distanceKm, driveMin, matchPair } from '../lib/matching'
 import { DAYS, type Day, type Driver, type Rider, type Role } from '../lib/types'
 import { RouteMap } from './RouteMap'
 import { TripMap } from './TripMap'
+import { navLinks } from './navLinks'
 import {
   DETOUR_RANGE,
   MAX_DETOUR,
@@ -297,7 +298,21 @@ export function TimeStep({ a, set, next }: StepProps) {
 
 /* ---------- 5. Pitch: the value before sign-up ---------- */
 
-export function PitchStep({ a, next, goTo }: StepProps) {
+// Earlier arrivals to offer a driver when nobody fits their time, closest first.
+const EARLIER_BY = [10, 20, 30]
+
+function earlierOptions(a: Answers) {
+  return EARLIER_BY.map((m) => a.arriveBy - m)
+    .filter((t) => t >= 0)
+    .flatMap((t) => {
+      const me = { ...meAsDriver(a), arriveBy: t }
+      const candidates = driverCandidates(me)
+      const riders = suggestRiders(me, candidates)
+      return riders.length ? [{ time: t, earlier: a.arriveBy - t, count: candidates.length, plan: planRoute(me, riders) }] : []
+    })
+}
+
+export function PitchStep({ a, set, next, goTo }: StepProps) {
   const isDriver = a.role === 'driver'
   const [previewEmpty, setPreviewEmpty] = useState(false)
   const data = useMemo(() => {
@@ -312,12 +327,14 @@ export function PitchStep({ a, next, goTo }: StepProps) {
     const plan = candidates[0] ? planRoute(candidates[0], [me], 'rider') : null
     return { count: candidates.length, plan }
   }, [a, isDriver])
+  const showEmpty = previewEmpty || data.count === 0 || !data.plan
+  const earlier = useMemo(() => (showEmpty && isDriver ? earlierOptions(a) : []), [a, isDriver, showEmpty])
 
-  if (previewEmpty || data.count === 0 || !data.plan) {
+  if (showEmpty || !data.plan) {
     return (
       <StepLayout
         title="No one on your route yet"
-        lede={`We couldn't find ${isDriver ? 'riders' : 'a driver'} going your way at that time. This is normal when a route is new.`}
+        lede={`We couldn't find ${isDriver ? 'riders' : 'a driver'} going your way to arrive by ${formatTime(a.arriveBy)}. This is normal when a route is new.`}
         cta="Try another starting point"
         onSubmit={() => goTo('start')}
         secondary={
@@ -326,9 +343,43 @@ export function PitchStep({ a, next, goTo }: StepProps) {
           </Button>
         }
       >
-        <div className="empty-art" aria-hidden="true">
-          <Icon name="search" size={40} />
-        </div>
+        {earlier.length > 0 ? (
+          <section className="stack" aria-labelledby="earlier-h">
+            <h2 id="earlier-h" className="demo-subtitle">
+              Could you arrive a little earlier?
+            </h2>
+            <p className="demo-lede">Riders are going your way at these times.</p>
+            <ul className="time-options">
+              {earlier.map((o) => (
+                <li key={o.time}>
+                  <button
+                    type="button"
+                    className="time-option"
+                    onClick={() => {
+                      set({ arriveBy: o.time })
+                      setPreviewEmpty(false)
+                    }}
+                  >
+                    <span className="time-option__time num">{formatTime(o.time)}</span>
+                    <span className="time-option__meta">
+                      <strong>
+                        {o.earlier} min earlier · {o.count} {o.count === 1 ? 'rider' : 'riders'}
+                      </strong>
+                      <span>
+                        +{o.plan.detour} min to your drive · save about ${o.plan.monthlySaving}/month
+                      </span>
+                    </span>
+                    <Icon name="arrowRight" />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : (
+          <div className="empty-art" aria-hidden="true">
+            <Icon name="search" size={40} />
+          </div>
+        )}
         {previewEmpty && <DemoPreview text="Preview of the no-match screen." label="Back to my matches" onClick={() => setPreviewEmpty(false)} />}
       </StepLayout>
     )
@@ -670,7 +721,7 @@ export function RouteStep({ a, next, goTo }: StepProps) {
     <StepLayout
       title="Your shared route"
       lede={isDriver ? 'Check it over, then share it with your passengers.' : `Check it over, then send it to ${names}.`}
-      cta={isDriver ? `Share route with ${names}` : `Send to ${names}`}
+      cta={isDriver ? (others.length > 1 ? `Share route with ${others.length} passengers` : `Share route with ${names}`) : `Send to ${names}`}
       loading={sending}
       onSubmit={share}
     >
@@ -890,6 +941,19 @@ export function HomeStep({ a, goTo, restart }: StepProps) {
                 ? `Picking up ${names}.`
                 : `${names} picks you up · ${(others[0] as Driver).car}.`}
           </p>
+          <div className="nav-links" role="group" aria-labelledby="nav-links-h">
+            <span id="nav-links-h" className="field__label">
+              {isDriver ? 'Open the route in' : 'Get to your pickup with'}
+            </span>
+            <div className="nav-links__row">
+              {navLinks(plan.stops, isDriver, me.startId).map((l) => (
+                <a key={l.app} className="btn btn--sm" href={l.href} target="_blank" rel="noopener noreferrer" aria-label={`${l.app}, ${l.note} (opens in a new tab)`}>
+                  {l.app}
+                </a>
+              ))}
+            </div>
+            {isDriver && <span className="field__hint">Google Maps loads every pickup. Apple Maps and Waze open the first stop.</span>}
+          </div>
           <div aria-live="polite">
             {checkedIn ? (
               <div className="checkin-done">
@@ -897,7 +961,7 @@ export function HomeStep({ a, goTo, restart }: StepProps) {
               </div>
             ) : (
               <Button variant="primary" block icon="flag" onClick={() => setCheckedIn(true)}>
-                {isDriver ? `Simulate ${names} checking in` : "I've arrived"}
+                {isDriver ? (others.length > 1 ? 'Simulate passengers checking in' : `Simulate ${names} checking in`) : "I've arrived"}
               </Button>
             )}
           </div>

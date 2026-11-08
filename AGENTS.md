@@ -34,7 +34,7 @@ Use this guide when updating Routemate with an LLM or coding agent. Open the sou
 
 1. Use Node.js 24. Run `npm ci`, `npm run lint`, and `npm run build` from `frontend/`.
 2. Run the relevant [README smoke tests](README.md#test-the-prototype). For matching, location, or schedule changes, check both demo roles, the preview buttons for the no-match and nobody-selected screens, and the fuller setup route. If expected results change, update the demo guide and README to match.
-3. For UI changes, check mobile and desktop widths. Try Back, Restart, and a reload partway through the flow when changing navigation or saved answers.
+3. For UI changes, check mobile and desktop widths, including 320px with three riders in the car: button text must stay inside its button. Try Back, Restart, and a reload partway through the flow when changing navigation or saved answers.
 4. For hosting changes, run `npm run build:pages`. Check that the published root loads and that `/#/setup/rider` opens directly and survives a reload.
 
 Example prompt for a collaborator's LLM

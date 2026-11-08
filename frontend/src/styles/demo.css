@@ -138,6 +138,17 @@
   gap: var(--space-5);
 }
 
+/* A slim scrollbar without arrow buttons, so it fits inside the phone frame. */
+.demo-body {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-strong) transparent;
+}
+
+/* On short screens the body scrolls; its parts (time wheel, maps, cards) keep their size. */
+.demo-body > * {
+  flex-shrink: 0;
+}
+
 .demo-foot {
   flex: none;
   display: flex;
@@ -354,6 +365,7 @@
 
 .tile__meta {
   display: inline-flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--space-1);
   margin-top: 2px;
@@ -773,12 +785,80 @@
   box-shadow: 0 0 0 4px var(--color-primary-soft);
 }
 
+/* ---------- Earlier arrival options (driver no-match) ---------- */
+.time-options {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.time-option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  width: 100%;
+  min-height: var(--tap-min);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-out), background var(--duration-fast) var(--ease-out);
+}
+
+.time-option:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+
+.time-option > svg {
+  margin-left: auto;
+  flex: none;
+  color: var(--color-primary);
+}
+
+.time-option__time {
+  font-size: var(--text-xl);
+  line-height: var(--leading-xl);
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.time-option__meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  font-size: var(--text-sm);
+  line-height: var(--leading-sm);
+}
+
+.time-option__meta span {
+  color: var(--color-text-muted);
+}
+
 /* ---------- Home (after setup) ---------- */
 .home__head {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
+}
+
+.nav-links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.nav-links__row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
 }
 
 .home__time {
