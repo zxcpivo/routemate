@@ -357,6 +357,87 @@ input[type='time'].input {
   border-bottom-color: var(--color-primary);
 }
 
+/* ---------- TimeWheel (drag-to-pick time) ---------- */
+.time-wheel {
+  --wheel-row: var(--tap-min); /* keep in sync with ROW in TimeWheel.tsx */
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-2);
+  height: calc(var(--wheel-row) * 5);
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  overflow: hidden;
+}
+
+.time-wheel__band {
+  position: absolute;
+  left: var(--space-3);
+  right: var(--space-3);
+  top: 50%;
+  height: var(--wheel-row);
+  transform: translateY(-50%);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-sunken);
+}
+
+.time-wheel__colon {
+  position: relative;
+  font-size: var(--text-xl);
+  font-weight: 700;
+}
+
+.wheel {
+  position: relative;
+  width: 4.5ch;
+  height: 100%;
+  padding-block: calc(var(--wheel-row) * 2);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
+  cursor: grab;
+  touch-action: pan-y;
+  /* fade rows away from the centre */
+  mask-image: linear-gradient(to bottom, transparent, black 30%, black 70%, transparent);
+}
+
+.wheel::-webkit-scrollbar {
+  display: none;
+}
+
+.wheel.is-dragging {
+  scroll-snap-type: none;
+  cursor: grabbing;
+}
+
+.wheel:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: -3px;
+  border-radius: var(--radius-sm);
+}
+
+.wheel__item {
+  height: var(--wheel-row);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  scroll-snap-align: center;
+  font-size: var(--text-xl);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+  user-select: none;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.wheel__item.is-selected {
+  color: var(--color-text);
+  font-weight: 700;
+}
+
 /* ---------- Avatar ---------- */
 .avatar {
   --avatar-size: 44px;

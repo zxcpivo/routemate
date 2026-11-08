@@ -42,7 +42,7 @@ All text pairs meet WCAG AA (4.5:1) against their background. Status colours alw
 
 Font: **Inter** (Google Fonts) with the system UI stack as fallback. Times and money use `font-variant-numeric: tabular-nums`.
 
-The [Routemate logo](../assets/brand/routemate-logo.svg) pairs a smiling car on a mint tile with a Manrope ExtraBold wordmark. `Brand` inlines the SVG so `--color-brand-ink` colours the lettering in both themes.
+The [Routemate logo](../assets/brand/routemate-logo.svg) pairs a smiling car on a mint tile with a Manrope ExtraBold wordmark. `Brand` inlines the SVG so `--color-brand-ink` colours the lettering in both themes. The Google “G” on the sign-in button keeps Google's brand colours; it is the only exception to the token rule. The Apple mark uses the text colour.
 
 | Token | Size / line height | Weight | Use |
 |---|---|---|---|
@@ -71,7 +71,8 @@ The [Routemate logo](../assets/brand/routemate-logo.svg) pairs a smiling car on 
 | **Button** | `primary` · `secondary` · `ghost` · `danger`; `sm` · `md` · `lg`; `block`; `loading` | hover, active, disabled, loading (spinner, label kept) | Native `<button>`; `aria-busy` while loading |
 | **SegmentedControl** | Options list | selected, focus | `role="radiogroup"`, each option `role="radio"`, arrow keys move selection |
 | **Field** | label, hint, error | error (border + message) | Label tied with `htmlFor`; hint and error via `aria-describedby` |
-| **Select / TimeInput** | Native controls styled to match | disabled, error | Native semantics |
+| **Select** | Native control styled to match | disabled, error | Native semantics |
+| **TimeWheel** | label, value, step (5 min) | dragging, selected row in the centre band | Hour, minute and AM/PM wheels are each a `spinbutton`; arrow keys, Page Up/Down, Home/End. Touch scrolls with snap points, a mouse drags or clicks |
 | **DayChips** | Days, selected | selected, focus | `role="group"` + toggle buttons with `aria-pressed` |
 | **Stepper** | min, max, step, format; `editable` + `unit` to type a value | at min / max disables − / + | Buttons labelled "Decrease …" / "Increase …"; value in `aria-live="polite"` |
 | **Avatar** | initials, tone | — | `aria-hidden`, name always shown as text next to it |
@@ -88,6 +89,7 @@ Styles in [`src/styles/demo.css`](src/styles/demo.css), code in [`src/demo/`](sr
 
 | Component | Variants / props | States | Accessibility |
 |---|---|---|---|
+| **DemoPreview** | text, button label | — | Dashed box with a button that opens a screen the demo would otherwise never reach (no matches, nobody selected) |
 | **ThemeSwitch** | — | shows the mode it switches to (Dark mode / Light mode) | Native button; choice saved as `routemate-theme` |
 | **PhoneFrame + PresenterPanel** | Frame and side panel from 900px up; full screen below | Current / done step in the panel | Panel is an `<aside>`; current step has `aria-current="step"` |
 | **StepLayout** | title, lede, primary CTA, secondary action | CTA disabled, loading | Each step is a `<form>`, so Enter continues; heading gets focus on each new step |

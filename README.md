@@ -26,9 +26,9 @@ Between runs, click **Restart demo** in the desktop side panel or **Restart the 
 
 | Flow | Steps | What to check |
 | --- | --- | --- |
-| Driver | Choose **I drive** and keep the defaults for York Keele, Downtown Brampton, and 9:00 AM on weekdays. | Five riders appear. The three suggested riders add 9 minutes and save about $78 per month. Continue through the shared route to **Route shared!** |
-| Rider | Choose **I need a ride** and keep the defaults for York Keele, Malton, and 8:45 AM on Monday, Wednesday, and Thursday. | Three drivers appear. The suggested ride costs $2.50 and saves about 19 minutes. Continue through the shared route to **Request accepted!** |
-| No match | Type **Maple** in the starting point search and pick Maple, Vaughan and keep the default schedule. | The demo offers to change the starting point or arrival time. |
+| Driver | Choose **I drive** and keep the defaults for York Keele, Downtown Brampton, and 8:00 AM on weekdays. | Eight riders appear. The three suggested riders add 6 minutes and save about $78 per month. Continue through the shared route to **Route shared!** |
+| Rider | Choose **I need a ride** and keep the defaults for York Keele, Malton, and 8:00 AM on Monday, Wednesday, and Thursday. | Nine drivers appear. The suggested ride costs $3 and saves about 19 minutes. Continue through the shared route to **Request accepted!** |
+| Any trip | Pick any start, destination, time and days. | Matches always appear. **Preview: no riders found** on Your savings shows the no-match screen, which offers to change the starting point or arrival time. **Preview: nobody selected** on Shared route shows that screen. |
 
 From `frontend/`, run `npm run lint` and `npm run build` to check the code. After building, `npm run preview` serves the production build locally, usually at [http://localhost:4173](http://localhost:4173).
 

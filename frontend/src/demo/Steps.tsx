@@ -3,8 +3,10 @@ import { Brand } from '../components/Brand'
 import { Icon, type IconName } from '../components/Icon'
 import { Avatar, Badge, Button, DayChips, Field, Stepper } from '../components/ui'
 import { PlaceSearch } from '../components/PlaceSearch'
+import { AppleIcon, GoogleIcon } from '../components/SocialIcons'
+import { TimeWheel } from '../components/TimeWheel'
 import { SEARCHABLE_PLACES, placeById } from '../data/places'
-import { formatMoney, formatTime, fromInputTime, toInputTime } from '../lib/format'
+import { formatMoney, formatTime } from '../lib/format'
 import { distanceKm, driveMin, matchPair } from '../lib/matching'
 import type { Driver, Rider, Role } from '../lib/types'
 import { RouteMap } from './RouteMap'
@@ -117,6 +119,23 @@ function Tile({
         <Icon name="check" size={14} />
       </span>
     </label>
+  )
+}
+
+/* ---------- Demo preview control ----------
+   The demo always finds matches. Screens that would only appear when something
+   goes wrong are reached with this button, so testers can still see them. */
+
+function DemoPreview({ text, label, onClick }: { text: string; label: string; onClick: () => void }) {
+  return (
+    <div className="demo-preview">
+      <span>
+        <Icon name="info" size={14} /> {text}
+      </span>
+      <Button size="sm" onClick={onClick}>
+        {label}
+      </Button>
+    </div>
   )
 }
 
@@ -258,39 +277,19 @@ export function StartStep({ a, set, next }: StepProps) {
 
 /* ---------- 3. Time ---------- */
 
-const TIMES = [8 * 60, 8 * 60 + 30, 8 * 60 + 45, 9 * 60, 9 * 60 + 30, 10 * 60]
-
 export function TimeStep({ a, set, next }: StepProps) {
-  const custom = !TIMES.includes(a.arriveBy)
   return (
     <StepLayout
       title="When do you need to be there?"
-      lede="Your class or shift start, minus the walk from drop-off."
+      lede="Your class or shift start, minus the walk from drop-off. Drag to choose."
       cta="Find my matches"
       ctaDisabled={a.days.length === 0}
       onSubmit={next}
     >
-      <div className="tile-grid tile-grid--3" role="radiogroup" aria-label="Arrive by">
-        {TIMES.map((t) => (
-          <Tile key={t} name="time" size="sm" checked={a.arriveBy === t} onChange={() => set({ arriveBy: t })}>
-            <span className="tile__text tile__text--center">
-              <strong className="num">{formatTime(t)}</strong>
-            </span>
-          </Tile>
-        ))}
-      </div>
-      <Field label="Or pick another time">
-        {(p) => (
-          <input
-            type="time"
-            className="input"
-            step={300}
-            value={custom ? toInputTime(a.arriveBy) : ''}
-            onChange={(e) => e.target.value && set({ arriveBy: fromInputTime(e.target.value) })}
-            {...p}
-          />
-        )}
-      </Field>
+      <p className="time-summary" aria-live="polite">
+        Arrive by <strong className="num">{formatTime(a.arriveBy)}</strong>
+      </p>
+      <TimeWheel label="Arrive by" value={a.arriveBy} onChange={(arriveBy) => set({ arriveBy })} />
       <DayChips label="Which days?" value={a.days} onChange={(days) => set({ days })} error={a.days.length === 0 ? 'Pick at least one day.' : undefined} />
     </StepLayout>
   )
@@ -300,6 +299,7 @@ export function TimeStep({ a, set, next }: StepProps) {
 
 export function PitchStep({ a, next, goTo }: StepProps) {
   const isDriver = a.role === 'driver'
+  const [previewEmpty, setPreviewEmpty] = useState(false)
   const data = useMemo(() => {
     if (isDriver) {
       const me = meAsDriver(a)
@@ -313,7 +313,7 @@ export function PitchStep({ a, next, goTo }: StepProps) {
     return { count: candidates.length, plan }
   }, [a, isDriver])
 
-  if (data.count === 0 || !data.plan) {
+  if (previewEmpty || data.count === 0 || !data.plan) {
     return (
       <StepLayout
         title="No one on your route yet"
@@ -329,10 +329,18 @@ export function PitchStep({ a, next, goTo }: StepProps) {
         <div className="empty-art" aria-hidden="true">
           <Icon name="search" size={40} />
         </div>
+        {previewEmpty && <DemoPreview text="Preview of the no-match screen." label="Back to my matches" onClick={() => setPreviewEmpty(false)} />}
       </StepLayout>
     )
   }
 
+  const emptyPreview = (
+    <DemoPreview
+      text="Demo always finds matches."
+      label={`Preview: no ${isDriver ? 'riders' : 'drivers'} found`}
+      onClick={() => setPreviewEmpty(true)}
+    />
+  )
   const plan = data.plan
   if (isDriver) {
     const n = plan.riders.length
@@ -367,6 +375,7 @@ export function PitchStep({ a, next, goTo }: StepProps) {
           Based on {n} {n === 1 ? 'rider' : 'riders'} splitting the trip cost evenly with you, at an example $0.20/km for gas and running costs. You'll
           never add more than {meAsDriver(a).maxDetour} minutes, and you can change that limit later.
         </p>
+        {emptyPreview}
       </StepLayout>
     )
   }
@@ -413,6 +422,7 @@ export function PitchStep({ a, next, goTo }: StepProps) {
       <p className="demo-note">
         Times are estimates. The contribution is the trip cost split evenly with the driver. For comparison, a TTC tap is $3.30.
       </p>
+      {emptyPreview}
     </StepLayout>
   )
 }
@@ -465,10 +475,10 @@ export function AccountStep({ a, set, next }: StepProps) {
     >
       <div className="stack" style={{ gap: 'var(--space-2)' }}>
         <Button block onClick={social} disabled={loading}>
-          Continue with Apple
+          <AppleIcon /> Continue with Apple
         </Button>
         <Button block onClick={social} disabled={loading}>
-          Continue with Google
+          <GoogleIcon /> Continue with Google
         </Button>
       </div>
       <div className="or-divider" role="separator">
@@ -638,8 +648,13 @@ function useRoute(a: Answers) {
 export function RouteStep({ a, next, goTo }: StepProps) {
   const route = useRoute(a)
   const [sending, setSending] = useState(false)
-  if (!route) {
-    return <StepLayout title="Pick a match first" cta="Back to matches" onSubmit={() => goTo('choose')} />
+  const [previewEmpty, setPreviewEmpty] = useState(false)
+  if (previewEmpty || !route) {
+    return (
+      <StepLayout title="Pick a match first" lede="Your route appears once you've chosen who to ride with." cta="Back to matches" onSubmit={() => goTo('choose')}>
+        {previewEmpty && <DemoPreview text="Preview of the screen shown with nobody selected." label="Back to my route" onClick={() => setPreviewEmpty(false)} />}
+      </StepLayout>
+    )
   }
   const { plan, others } = route
   const isDriver = a.role === 'driver'
@@ -712,6 +727,7 @@ export function RouteStep({ a, next, goTo }: StepProps) {
           +{plan.detour} min to your drive. Each passenger pays {formatMoney(plan.share)} a ride, agreed up front.
         </p>
       )}
+      <DemoPreview text="Demo control." label="Preview: nobody selected" onClick={() => setPreviewEmpty(true)} />
     </StepLayout>
   )
 }
