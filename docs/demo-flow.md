@@ -74,7 +74,7 @@ The walkthrough judges see at /. The progress bar counts steps 1 to 7; Welcome a
 | Shared route | Step 7 of 7 | Map, pickup times and the even cost split, to check before sharing. |
 | Pick a match first | Alternate screen | Shown if Shared route opens with nobody selected. |
 | Route shared! / Request accepted! | End | Who is riding and the weekly pattern. The other side's yes is simulated. |
-| Back, resume and presenter notes | Note | Every numbered step has a Back arrow to the screen you came from. Changing role, destination, start, time or days clears the matches you picked. From 900px wide the demo sits in a phone frame with presenter notes beside it. |
+| Back, resume and presenter notes | Note | Every numbered step has a Back arrow to the screen you came from. Changing role, destination, start, time or days clears the matches you picked. From 900px wide the demo sits in a phone frame with presenter notes beside it; the panel ends with Restart demo and a Dark mode / Light mode switch that is remembered in this browser. |
 
 ### Full app · /setup, /matches, /ride
 

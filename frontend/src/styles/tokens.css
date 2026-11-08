@@ -25,6 +25,7 @@
   --color-danger-soft: #fbe5e5;
   --color-info: #1d4ed8;
   --color-info-soft: #e4ecfb;
+  --color-brand-ink: #142438; /* logo lettering */
 
   /* Typography */
   --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -75,33 +76,33 @@
   --tap-min: 44px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    color-scheme: dark;
-    --color-bg: #0c1412;
-    --color-surface: #131e1b;
-    --color-surface-sunken: #0f1816;
-    --color-border: #26332f;
-    --color-border-strong: #3a4a45;
-    --color-text: #e7efec;
-    --color-text-muted: #9aaba6;
-    --color-primary: #2dd4bf;
-    --color-primary-hover: #5eead4;
-    --color-primary-soft: #12332e;
-    --color-on-primary: #04211d;
-    --color-accent: #fbbf24;
-    --color-success: #4ade80;
-    --color-success-soft: #123020;
-    --color-warning: #fbbf24;
-    --color-warning-soft: #352a10;
-    --color-danger: #f87171;
-    --color-danger-soft: #3a1717;
-    --color-info: #93b4fb;
-    --color-info-soft: #16223f;
-    --shadow-1: 0 1px 2px rgb(0 0 0 / 0.4);
-    --shadow-2: 0 4px 12px rgb(0 0 0 / 0.45);
-    --shadow-3: 0 -4px 16px rgb(0 0 0 / 0.5);
-  }
+/* data-theme is always set on <html> (see src/lib/theme.ts), following the device until someone uses the switch. */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --color-bg: #0c1412;
+  --color-surface: #131e1b;
+  --color-surface-sunken: #0f1816;
+  --color-border: #26332f;
+  --color-border-strong: #3a4a45;
+  --color-text: #e7efec;
+  --color-text-muted: #9aaba6;
+  --color-primary: #2dd4bf;
+  --color-primary-hover: #5eead4;
+  --color-primary-soft: #12332e;
+  --color-on-primary: #04211d;
+  --color-accent: #fbbf24;
+  --color-success: #4ade80;
+  --color-success-soft: #123020;
+  --color-warning: #fbbf24;
+  --color-warning-soft: #352a10;
+  --color-danger: #f87171;
+  --color-danger-soft: #3a1717;
+  --color-info: #93b4fb;
+  --color-info-soft: #16223f;
+  --color-brand-ink: #f4fffb;
+  --shadow-1: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-2: 0 4px 12px rgb(0 0 0 / 0.45);
+  --shadow-3: 0 -4px 16px rgb(0 0 0 / 0.5);
 }
 
 @media (prefers-reduced-motion: reduce) {

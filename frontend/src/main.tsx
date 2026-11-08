@@ -4,6 +4,9 @@ import { BrowserRouter, HashRouter } from 'react-router-dom'
 import './index.css'
 import App from './App'
 import { StoreProvider } from './lib/store'
+import { followSystemTheme } from './lib/theme'
+
+followSystemTheme()
 
 const Router = import.meta.env.MODE === 'pages' ? HashRouter : BrowserRouter
 

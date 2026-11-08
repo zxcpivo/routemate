@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Brand } from '../components/Brand'
 import { Icon } from '../components/Icon'
+import { ThemeSwitch } from '../components/ui'
 import { DEFAULT_ANSWERS, ROLE_DEFAULTS, type Answers } from './plan'
 import {
   AccountStep,
@@ -152,9 +153,12 @@ export default function DemoApp() {
         <p className="presenter__tip">
           <Icon name="info" size={14} /> Every screen has answers filled in, so you can just keep tapping. People and trips are made up.
         </p>
-        <button type="button" className="btn btn--sm" onClick={restart}>
-          Restart demo
-        </button>
+        <div className="presenter__actions">
+          <button type="button" className="btn btn--sm" onClick={restart}>
+            Restart demo
+          </button>
+          <ThemeSwitch />
+        </div>
       </aside>
     </div>
   )

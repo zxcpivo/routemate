@@ -773,6 +773,12 @@
   box-shadow: 0 0 0 4px var(--color-primary-soft);
 }
 
+.presenter__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
 .presenter__note {
   font-size: var(--text-lg);
   line-height: var(--leading-lg);
@@ -829,12 +835,6 @@
 }
 
 /* OSM tiles are light only: invert them to match dark mode. */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) .trip-map .leaflet-tile-pane {
-    filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(0.9);
-  }
-}
-
 :root[data-theme='dark'] .trip-map .leaflet-tile-pane {
   filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(0.9);
 }

@@ -34,6 +34,16 @@
   height: var(--space-8);
 }
 
+.logo__wordmark svg {
+  display: block;
+  width: auto;
+  height: 100%;
+}
+
+.logo__wordmark .wordmark {
+  fill: var(--color-brand-ink);
+}
+
 .app-nav {
   display: flex;
   gap: var(--space-1);

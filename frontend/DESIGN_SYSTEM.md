@@ -42,7 +42,7 @@ All text pairs meet WCAG AA (4.5:1) against their background. Status colours alw
 
 Font: **Inter** (Google Fonts) with the system UI stack as fallback. Times and money use `font-variant-numeric: tabular-nums`.
 
-The [Routemate logo](../assets/brand/routemate-logo.svg) pairs a smiling car on a mint tile with a Manrope ExtraBold wordmark. The SVG switches the lettering colour for dark mode.
+The [Routemate logo](../assets/brand/routemate-logo.svg) pairs a smiling car on a mint tile with a Manrope ExtraBold wordmark. `Brand` inlines the SVG so `--color-brand-ink` colours the lettering in both themes.
 
 | Token | Size / line height | Weight | Use |
 |---|---|---|---|
@@ -88,6 +88,7 @@ Styles in [`src/styles/demo.css`](src/styles/demo.css), code in [`src/demo/`](sr
 
 | Component | Variants / props | States | Accessibility |
 |---|---|---|---|
+| **ThemeSwitch** | — | shows the mode it switches to (Dark mode / Light mode) | Native button; choice saved as `routemate-theme` |
 | **PhoneFrame + PresenterPanel** | Frame and side panel from 900px up; full screen below | Current / done step in the panel | Panel is an `<aside>`; current step has `aria-current="step"` |
 | **StepLayout** | title, lede, primary CTA, secondary action | CTA disabled, loading | Each step is a `<form>`, so Enter continues; heading gets focus on each new step |
 | **ProgressBar** | step / total | — | `role="progressbar"` with "Step n of 7: name" |
