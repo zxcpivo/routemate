@@ -9,14 +9,14 @@ These are hypothetical scenarios, not incidents reported in the customer intervi
 ## Violence and safety
 
 - **V1:** What if the driver or passenger threatens the other person?
-    Before: Make “no threats, harassment, or intimidation” an explicit rule. Either person can cancel before pickup if they feel uncomfortable; Make it a rule for the driver to have a dash cam that records the inside of the car. This is to make it harder for people to abuse the system.
-    During: Provide an easily accessible Get help screen with a Call 911 option and the trip’s vehicle details and location.  
-    After: Let the person report the incident and block the other person. Blocking should prevent future recurring rides and backup matches between them.
-    Important: A report button needs someone responsible for reviewing reports. We cannot promise immediate assistance from our team without actually providing that service.
+    Before: Ban threats and harassment. Allow cancellation before pickup. Require a cabin dashcam to support incident reviews.
+    During: Provide a Get help screen with a Call 911 option, vehicle details, and location.
+    After: Allow reporting and blocking, preventing future rides together.
+    Support: Assign someone to review reports. Only promise response times the team can deliver.
 - **V2:** What if the driver refuses to let the passenger out?
-    Our rule is: “A passenger can ask to end the ride. The driver must stop at the nearest place where it is safe and permitted to let them out.” The passenger should face no cancellation penalty for ending a ride over a safety concern. If the driver refuses to release them, treat it as an emergency. Afterward, prevent further pairings and review the report urgently. Keep relevant trip records and messages available for an authorized investigation.
+    The driver must stop at the nearest safe, permitted location when asked. Safety-related cancellations carry no penalty. Refusing to release a passenger is an emergency. Block future pairings, urgently review the report, and preserve relevant records.
 - **V3:** What if a different person arrives instead of the agreed driver?
-    Before pickup, the app needs to show the agreed driver’s name and photo, the car’s make, model, color, and licence plate. The passenger should compare those details before entering. In case the details don't match, IDK THINK OF SOMETHING THAT MAKES MORE SENSE 
+    Show the driver’s photo, name, vehicle details, and licence plate before pickup. If anything differs, the passenger can decline the ride and cancel immediately. Ask which detail differs; photos are optional and should only be taken when safe. Review disputed charges using booking records and both accounts. Confirmed mismatches carry no cancellation fee. Proven deliberate false reports may lead to charges or account restrictions. Lack of proof alone does not establish fraud.
 
 ## Theft
 
@@ -41,10 +41,15 @@ These are hypothetical scenarios, not incidents reported in the customer intervi
 ## Recurring rides and cancellations
 
 - **R1:** What if the driver cancels at 5:15 a.m. when pickup is at 5:30?
+    Notify affected passengers immediately and search for an available backup. Record late cancellations and review repeated patterns, allowing for genuine emergencies.
 - **R2:** What if a passenger repeatedly arrives late for pickup?
+    Agree on a waiting limit beforehand—for example, five minutes. The driver can leave afterward. Repeated lateness can lead to a warning and ending the arrangement.
 - **R3:** What if someone stops wanting to ride with their regular partner?
+    Either person can end future rides and request a new match. Encourage advance notice where possible. Safety-related blocking takes effect immediately.
 - **R4:** What if there's a ride to work but no ride home?
+    Show outbound and return rides separately. Clearly label one-way arrangements so passengers can plan their return before committing.
 - **R5:** What if the app promises a backup, but no other driver is available?
+    Promise to search for a backup, not guarantee one. Only mark it confirmed when a replacement accepts. If none is available, tell the passenger promptly and show alternative travel options with any additional costs clearly stated.
 
 ## How to work through each question
 
