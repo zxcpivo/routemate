@@ -773,6 +773,25 @@
   box-shadow: 0 0 0 4px var(--color-primary-soft);
 }
 
+/* ---------- Home (after setup) ---------- */
+.home__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.home__time {
+  display: flex;
+  flex-direction: column;
+}
+
+.home__time strong {
+  font-size: var(--text-3xl);
+  line-height: var(--leading-3xl);
+  font-weight: 800;
+}
+
 .time-summary {
   font-size: var(--text-md);
   color: var(--color-text-muted);

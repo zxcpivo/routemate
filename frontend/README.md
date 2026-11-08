@@ -22,7 +22,8 @@ On a laptop or projector (900px wide or more) the demo shows inside a phone fram
 | 5 | Create account | Continue with Apple or Google (simulated), or name and email. Consent is always required. **Fill in demo details** does it in one tap |
 | 6 | Choose matches | Driver picks up to 3 passengers and can type or step the detour limit (10 minutes by default); the detour and savings update live and block anything over the limit, with a **Raise my limit** button to accept the extra time. Rider picks a driver |
 | 7 | Shared route | Drawn map, pickup times, days and money |
-| 8 | Done | Everyone accepted (simulated) and what happens each week |
+| 8 | Done | Everyone accepted (simulated) and what happens each week. **Go to my home** continues |
+| 9 | Home | The app after setup: next ride with route map, check-in, this week, a backup for an away day, savings, routemates |
 
 **Good demo paths**
 
@@ -31,7 +32,7 @@ On a laptop or projector (900px wide or more) the demo shows inside a phone fram
 - **Any trip works:** the demo fits its sample commuters to whatever you enter, so matches always appear.
 - **No match:** tap **Preview: no riders found** on Your savings. The app says so plainly and offers to change the start or the time.
 
-**Restart:** the button on the last screen, or **Restart demo** in the side panel.
+**Restart:** the button on Done or Home, or **Restart demo** in the side panel.
 
 ## Fuller app screens
 

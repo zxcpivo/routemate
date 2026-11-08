@@ -106,7 +106,7 @@ export function planRoute(driver: Driver, riders: Rider[], viewer: Role = 'drive
   const stops: Stop[] = [
     { kind: 'start', placeId: start.id, time: departTime, who: driver.name },
     ...ordered.map((r, i) => ({ kind: 'pickup' as const, placeId: r.startId, time: departTime + offsets[i], who: r.name })),
-    { kind: 'end', placeId: end.id, time: departTime + t, who: '' },
+    { kind: 'end', placeId: end.id, time: Math.ceil(departTime + t), who: '' },
   ]
 
   const n = ordered.length
@@ -126,16 +126,17 @@ export function planRoute(driver: Driver, riders: Rider[], viewer: Role = 'drive
     if (early > EARLY_LIMIT_MIN) warnings.push(`${firstName(p.name)} would arrive ${early} min early`)
   }
 
+  // Leaving on a whole minute lands up to a minute early, so round the arrival up.
   return {
-    driver, riders: ordered, stops, detour, departTime, arrival: departTime + t, share, sharedDays,
+    driver, riders: ordered, stops, detour, departTime, arrival: Math.ceil(departTime + t), share, sharedDays,
     monthlySaving, monthlyCost, overLimit: detour > driver.maxDetour, warnings,
   }
 }
 
 /* ---------- Demo cast ----------
    The guided demo always finds people, whatever trip the tester enters. Each sample
-   commuter is fitted to the tester's trip: same destination, an arrival a few minutes
-   either side of theirs, and their shared days (or all of the tester's days). If their
+   commuter is fitted to the tester's trip: same destination, an arrival up to 10 minutes
+   after the tester's (so the group still arrives on the tester's time), and their shared days (or all of the tester's days). If their
    usual starting point still fails the matching rules, they are moved onto the tester's
    route. The "no one matches" screen is shown with a preview button instead. */
 
@@ -165,7 +166,8 @@ function castRiders(me: Driver): Rider[] {
   const frame = routeFrame(me.startId, me.destinationId)
   return DEMO_RIDERS.map((r, i) => {
     const shared = r.days.filter((d) => me.days.includes(d))
-    const fitted: Rider = { ...r, destinationId: me.destinationId, arriveBy: me.arriveBy - pick(ARRIVAL_SPREAD, i), days: shared.length ? shared : me.days }
+    // Riders start at or after the driver's time, so the group still arrives when the tester asked.
+    const fitted: Rider = { ...r, destinationId: me.destinationId, arriveBy: me.arriveBy + pick(ARRIVAL_SPREAD, i), days: shared.length ? shared : me.days }
     if (matchPair(me, fitted).ok) return fitted
     const along = frame.len * ((i + 1) / (DEMO_RIDERS.length + 1))
     return { ...fitted, startId: frame.at(along, pick(SIDE_KM, i)) }
