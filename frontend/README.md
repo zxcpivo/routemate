@@ -17,20 +17,22 @@ On a laptop or projector (900px wide or more) the demo shows inside a phone fram
 | 0 | Welcome | "Wanna be my routemate?" and three promises |
 | 1 | Driver or rider | Tap one; it moves on by itself |
 | 2 | Starting point & Destination | Type to search a start (riders: a public meeting point, never a home address) and a destination, or drag the pins on the map. Prefilled with the role's default and York Keele |
-| 3 | Arrival time and days | Time chips, or any time |
+| 3 | Arrival time and days | Drag-to-pick wheel in 5-minute steps, starting at 8:00 AM |
 | 4 | Your savings | Driver: "save about $78/month on gas, +9 min to your drive". Rider: trip time by transit, then with a routemate, plus reliability and cost per ride |
 | 5 | Create account | Continue with Apple or Google (simulated), or name and email. Consent is always required. **Fill in demo details** does it in one tap |
 | 6 | Choose matches | Driver picks up to 3 passengers and can type or step the detour limit (10 minutes by default); the detour and savings update live and block anything over the limit, with a **Raise my limit** button to accept the extra time. Rider picks a driver |
 | 7 | Shared route | Drawn map, pickup times, days and money |
-| 8 | Done | Everyone accepted (simulated) and what happens each week |
+| 8 | Done | Everyone accepted (simulated) and what happens each week. **Go to my home** continues |
+| 9 | Home | The app after setup: next ride with route map, check-in, this week, a backup for an away day, savings, routemates |
 
 **Good demo paths**
 
-- **Driver:** I drive → Downtown Brampton → 9:00 AM, Mon–Fri. 5 riders on the route, 3 picked, +9 min, about $78 a month.
-- **Rider:** I need a ride → Malton → 8:45 AM, Mon/Wed/Thu. 3 drivers, $2.50 a ride, about 19 min faster than transit.
-- **No match:** type **Maple** in the starting point search. The app says so plainly and offers to change the start or the time.
+- **Driver:** I drive → Downtown Brampton → 8:00 AM, Mon–Fri. 8 riders on the route, 3 picked, +6 min, about $78 a month.
+- **Rider:** I need a ride → Malton → 8:00 AM, Mon/Wed/Thu. 9 drivers, $3 a ride, about 19 min faster than transit.
+- **Any trip works:** the demo fits its sample commuters to whatever you enter, so matches always appear.
+- **No match:** tap **Preview: no riders found** on Your savings. The app says so plainly and offers to change the start or the time.
 
-**Restart:** the button on the last screen, or **Restart demo** in the side panel.
+**Restart:** the button on Done or Home, or **Restart demo** in the side panel.
 
 ## Fuller app screens
 

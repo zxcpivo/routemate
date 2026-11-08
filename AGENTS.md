@@ -23,7 +23,9 @@ Use this guide when updating Routemate with an LLM or coding agent. Open the sou
 ## Behaviour to preserve
 
 - The guided demo saves `routemate-demo-v1`. The fuller app saves `routemate-prototype-v1`. Preserve existing IDs and stored values, or handle old data when changing the shape. `placeById` throws for unknown IDs, except dragged pins stored as `pin:<lat>,<lng>`. Times are minutes after midnight and contributions are dollars per ride.
+- The guided demo always finds matches: `castRiders` and `castDrivers` in [`plan.ts`](frontend/src/demo/plan.ts) fit the sample commuters to the tester's trip. The fuller app keeps strict matching. Error screens in the guided demo are reached through `DemoPreview` buttons.
 - Changing role, destination, start, time, or days clears prior guided match selections. Keep the driver seat and whole-route detour checks when editing match selection. The default demo allows up to three riders and a 10-minute detour; drivers can adjust the limit from 5 to 20 minutes on Choose matches.
+- `<html>` always has `data-theme="light"` or `"dark"`, set before first paint in `index.html` and kept by [`theme.ts`](frontend/src/lib/theme.ts). It follows the device until someone uses the presenter panel switch, then saves `routemate-theme`. Put dark colours under `:root[data-theme='dark']` in `tokens.css`, not a media query.
 - The demo fills the screen on mobile and shows a phone frame with presenter notes at 900px and above. Preserve keyboard access, heading focus on step changes, and visible status text.
 - The Starting point & Destination map loads OpenStreetMap tiles and an OSRM road route over the network. Offline, it still shows the pins and a dashed straight line, and the matching maths never depends on it.
 - Local mode uses normal browser paths. The Pages build uses hash routes and relative asset URLs so it works under a repository subpath. The [Pages workflow](.github/workflows/pages.yml) publishes only the generated `frontend/dist` contents.
@@ -31,7 +33,7 @@ Use this guide when updating Routemate with an LLM or coding agent. Open the sou
 ## Verify a change
 
 1. Use Node.js 24. Run `npm ci`, `npm run lint`, and `npm run build` from `frontend/`.
-2. Run the relevant [README smoke tests](README.md#test-the-prototype). For matching, location, or schedule changes, check both demo roles, Maple's no-match recovery, and the fuller setup route. If expected results change, update the demo guide and README to match.
+2. Run the relevant [README smoke tests](README.md#test-the-prototype). For matching, location, or schedule changes, check both demo roles, the preview buttons for the no-match and nobody-selected screens, and the fuller setup route. If expected results change, update the demo guide and README to match.
 3. For UI changes, check mobile and desktop widths. Try Back, Restart, and a reload partway through the flow when changing navigation or saved answers.
 4. For hosting changes, run `npm run build:pages`. Check that the published root loads and that `/#/setup/rider` opens directly and survives a reload.
 

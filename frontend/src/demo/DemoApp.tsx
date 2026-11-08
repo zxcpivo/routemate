@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { Brand } from '../components/Brand'
 import { Icon } from '../components/Icon'
+import { ThemeSwitch } from '../components/ui'
 import { DEFAULT_ANSWERS, ROLE_DEFAULTS, type Answers } from './plan'
 import {
   AccountStep,
   ChooseStep,
   DoneStep,
+  HomeStep,
   PitchStep,
   RoleStep,
   RouteStep,
@@ -31,7 +33,11 @@ const STEPS: StepDef[] = [
   { id: 'choose', name: 'Choose matches', Component: ChooseStep, note: 'Drivers choose who to pick up and can adjust their detour limit (10 minutes by default). Routemate keeps the whole route inside it.' },
   { id: 'route', name: 'Shared route', Component: RouteStep, note: 'One shared route with pickup times. The cost is split evenly with the driver and agreed up front.' },
   { id: 'done', name: 'Done', Component: DoneStep, note: 'Same people, same days, every week. If the driver is away, Routemate finds a backup.' },
+  { id: 'home', name: 'Home', Component: HomeStep, note: 'Once everything is set up, the app opens on the week ahead: next pickup, check-in, and a backup when someone is away.' },
 ]
+
+// Screens with no Back arrow or progress bar.
+const OUTSIDE_PROGRESS: StepId[] = ['welcome', 'done', 'home']
 
 const KEY = 'routemate-demo-v1'
 type Saved = { step: StepId; answers: Answers }
@@ -99,9 +105,9 @@ export default function DemoApp() {
     setSaved({ step: 'welcome', answers: DEFAULT_ANSWERS })
   }
 
-  // Progress counts the question steps only (not welcome/done).
-  const total = STEPS.length - 2
-  const showChrome = step !== 'welcome' && step !== 'done'
+  // Progress counts the question steps only (not welcome, done or home).
+  const total = STEPS.filter((s) => !OUTSIDE_PROGRESS.includes(s.id)).length
+  const showChrome = !OUTSIDE_PROGRESS.includes(step)
   const Step = current.Component
 
   return (
@@ -152,9 +158,12 @@ export default function DemoApp() {
         <p className="presenter__tip">
           <Icon name="info" size={14} /> Every screen has answers filled in, so you can just keep tapping. People and trips are made up.
         </p>
-        <button type="button" className="btn btn--sm" onClick={restart}>
-          Restart demo
-        </button>
+        <div className="presenter__actions">
+          <button type="button" className="btn btn--sm" onClick={restart}>
+            Restart demo
+          </button>
+          <ThemeSwitch />
+        </div>
       </aside>
     </div>
   )

@@ -29,7 +29,7 @@ Start with one working York Keele student who has a fixed class or shift start o
 
 Aim to make the core flow understandable in about a minute. The build lesson calls for a one-page team spec covering the user, screens and data, what must work, what can wait, and one owner per piece. Ask someone outside the team to try the core flow before submission. Use fictional or anonymized trips in a public demo.
 
-**Use the guided demo.** The [frontend guide](../frontend/README.md) shows a preset Malton-to-Keele rider trip and a no-match scenario starting in Maple. The fuller screens show backup matching and arrival check-in. Use the prefilled demo details and describe the people, trips and acceptances as simulated. Any on-screen travel time or savings figure is an estimate.
+**Use the guided demo.** The [frontend guide](../frontend/README.md) shows a preset Malton-to-Keele rider trip and a no-match screen opened with its preview button. The fuller screens show backup matching and arrival check-in. Use the prefilled demo details and describe the people, trips and acceptances as simulated. Any on-screen travel time or savings figure is an estimate.
 
 **Sample submission description.** Routemate is an interactive web prototype for working York Keele students who need a reliable ride to a fixed-start class or shift. It uses a simulated trip to show how a rider finds a driver already making a compatible commute and sees the recurring pickup days, pickup time, and contribution per ride before confirming.
 

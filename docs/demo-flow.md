@@ -15,7 +15,10 @@ flowchart LR
     choose["Choose matches<br/><small>Step 6 of 7</small>"]
     route["Shared route<br/><small>Step 7 of 7</small>"]
     routeEmpty{{"Pick a match first<br/><small>Alternate screen</small>"}}
-    done["Route shared! / Request accepted!<br/><small>End</small>"]
+    done["Route shared! / Request accepted!<br/><small>Confirmation</small>"]
+    home["Home<br/><small>End</small>"]
+    homeCheckIn{{"Checked in · on time<br/><small>On-page state</small>"}}
+    homeBackup{{"Backup on an away day<br/><small>On-page state</small>"}}
   end
   subgraph laneB["Full app · /setup, /matches, /ride"]
     setup[/"Your regular trip<br/><small>/setup/:role</small>"/]
@@ -30,16 +33,23 @@ flowchart LR
   welcome -->|"Start the demo"| role
   start -->|"Continue"| time
   time -->|"Find my matches"| pitch
-  pitch -->|"Nobody matches"| pitchEmpty
+  pitch -->|"Preview: no riders / drivers found"| pitchEmpty
   pitchEmpty -->|"Try another starting point"| start
   pitchEmpty -->|"Change my arrival time"| time
+  pitchEmpty -->|"Back to my matches"| pitch
   pitch -->|"Create my account"| account
   account -->|"Create account"| choose
   choose -->|"See my route"| route
-  route -->|"Nobody selected"| routeEmpty
+  route -->|"Preview: nobody selected"| routeEmpty
   routeEmpty -->|"Back to matches"| choose
+  routeEmpty -->|"Back to my route"| route
   route -->|"Share route / Send to …"| done
+  done -->|"Go to my home"| home
   done -->|"Restart the demo"| welcome
+  home -->|"Check in"| homeCheckIn
+  home -->|"Find a backup"| homeBackup
+  home -->|"Edit my trip"| start
+  home -->|"Restart the demo"| welcome
   setup -->|"Find drivers / Find riders"| matches
   matches -->|"Edit"| setup
   matches -->|"Tap a match card"| detail
@@ -59,22 +69,26 @@ flowchart LR
 
 ### Guided demo · /
 
-The walkthrough judges see at /. The progress bar counts steps 1 to 7; Welcome and Done have none. Answers are kept in this browser, so a reload resumes the same step.
+The walkthrough judges see at /. The progress bar counts steps 1 to 7; Welcome, Done and Home have none. Answers are kept in this browser, so a reload resumes the same step.
 
 | Screen | Tag | What it shows |
 |---|---|---|
 | Welcome | Start | “Wanna be my routemate?” and what Routemate does. |
 | Driver or rider | Step 1 of 7 | “How do you get there?” Picking a card moves on by itself. |
 | Starting point & Destination | Step 2 of 7 | Driver: “Where do you start?” "What is your destination?" Rider: “Where can you be picked up?" "What is your destination?” Each is a search box that autocompletes from a local list of stations, malls and campuses, prefilled for the demo. A live map below shows the route; both pins can be dragged and snap to a nearby known spot. A meeting point, never a home address. |
-| Arrival time | Step 3 of 7 | “When do you need to be there?” Arrive-by time and which days. |
+| Arrival time | Step 3 of 7 | “When do you need to be there?” Drag the hour, minute (5-minute steps) and AM/PM wheels; starts at 8:00 AM. Then which days. |
 | Your savings | Step 4 of 7 | “Good news”: money back for drivers and original trip time then added trip time, time, reliability, and cost for riders. Shown before any account. |
-| No one on your route yet | Alternate screen | Replaces Your savings when nobody is going your way at that time. |
-| Create account | Step 5 of 7 | Name and email, login with apple, login with google, or “Fill in demo details”. Matches only see a first name and an approximate area. |
+| No one on your route yet | Alternate screen | The demo always finds matches, so testers open this with “Preview: no riders found” (or drivers) on Your savings, and return with “Back to my matches”. |
+| Create account | Step 5 of 7 | Name and email, Continue with Apple or Google (with their logos), or “Fill in demo details”. Matches only see a first name and an approximate area. |
 | Choose matches | Step 6 of 7 | Driver: “pick your passengers” within seats and the 10-minute detour limit. The limit can be typed or stepped (5–20 min); if the route goes over it, “Raise my limit to … min” accepts the new time in one tap. Rider: “pick your driver”. |
 | Shared route | Step 7 of 7 | Map, pickup times and the even cost split, to check before sharing. |
-| Pick a match first | Alternate screen | Shown if Shared route opens with nobody selected. |
-| Route shared! / Request accepted! | End | Who is riding and the weekly pattern. The other side's yes is simulated. |
-| Back, resume and presenter notes | Note | Every numbered step has a Back arrow to the screen you came from. Changing role, destination, start, time or days clears the matches you picked. From 900px wide the demo sits in a phone frame with presenter notes beside it. |
+| Pick a match first | Alternate screen | Opened with “Preview: nobody selected” on Shared route; “Back to my route” returns. |
+| Route shared! / Request accepted! | Confirmation | Who is riding and the weekly pattern. The other side's yes is simulated. “Go to my home” continues; “Restart the demo” starts over. |
+| Home | End | The app once everything is set up: greeting, next ride (leave or pickup time, arrive-by, route map, who is riding), this week's days, savings or cost, and routemates. “Edit my trip” goes back to Starting point & Destination. No progress bar or Back arrow. |
+| Checked in · on time | On-page state | On Home, “I've arrived” (rider) or “Simulate … checking in” (driver) swaps the button for the arrival time. |
+| Backup on an away day | On-page state | On Home, pick a day and “Find a backup”: the week strip marks it and names the backup driver (always found in the demo). Undo clears it. |
+| Demo always matches | Note | Sample commuters are fitted to whatever trip the tester enters (destination, time, days, and moved onto the route if needed), so every start, destination, time and detour limit finds people. |
+| Back, resume and presenter notes | Note | Every numbered step has a Back arrow to the screen you came from. Changing role, destination, start, time or days clears the matches you picked. From 900px wide the demo sits in a phone frame with presenter notes beside it; the panel ends with Restart demo and a Dark mode / Light mode switch that is remembered in this browser. |
 
 ### Full app · /setup, /matches, /ride
 

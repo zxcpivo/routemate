@@ -3,6 +3,7 @@ import { Link, type LinkProps } from 'react-router-dom'
 import { Icon, type IconName } from './Icon'
 import { DAYS, type Day } from '../lib/types'
 import { initials } from '../lib/format'
+import { currentTheme, setTheme, type Theme } from '../lib/theme'
 
 /* ---------- Button ---------- */
 
@@ -182,6 +183,26 @@ export function DayChips({
         </span>
       )}
     </div>
+  )
+}
+
+/* ---------- ThemeSwitch ---------- */
+
+// One button that flips between light and dark mode and remembers the choice.
+export function ThemeSwitch() {
+  const [theme, setLocal] = useState<Theme>(currentTheme)
+  const next: Theme = theme === 'dark' ? 'light' : 'dark'
+  return (
+    <Button
+      size="sm"
+      icon={next === 'dark' ? 'moon' : 'sun'}
+      onClick={() => {
+        setTheme(next)
+        setLocal(next)
+      }}
+    >
+      {next === 'dark' ? 'Dark mode' : 'Light mode'}
+    </Button>
   )
 }
 
