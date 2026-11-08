@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-import { placeById, placeIdAt } from '../data/places'
+import { isCustomPin, placeById, placeIdAt } from '../data/places'
 
 // Live map for the Starting point & Destination step. Both pins can be dragged;
 // a pin dropped close to a known station, mall or campus snaps to it.
@@ -131,6 +131,8 @@ export function TripMap({
 
     line.current?.setLatLngs([a, b])
     line.current?.getElement()?.classList.add('trip-map__route--estimate')
+    // Custom pins can be private addresses. Keep their exact coordinates out of routing requests.
+    if (isCustomPin(startId) || isCustomPin(destinationId)) return
     let live = true
     const ctrl = new AbortController()
     const timer = window.setTimeout(() => ctrl.abort(), 5000)

@@ -6,6 +6,7 @@
 // Travel times are rough estimates from straight-line distance, good enough for a prototype.
 
 import { placeById, type Place } from '../data/places'
+import { activeRidePreference, meetsRidePreference } from './ridePreferences'
 import type { Day, Driver, Rider } from './types'
 
 const ROAD_FACTOR = 1.3 // roads are longer than a straight line
@@ -48,10 +49,10 @@ export type MatchResult = {
   riderEarly: number
   driverEarly: number
   riderKm: number
-  checks: { days: RuleCheck; detour: RuleCheck; timing: RuleCheck }
+  checks: { days: RuleCheck; detour: RuleCheck; timing: RuleCheck; preference?: RuleCheck }
 }
 
-export function matchPair(driver: Driver, rider: Rider): MatchResult {
+export function matchPair(driver: Driver, rider: Rider, groupRide = false): MatchResult {
   const dStart = placeById(driver.startId)
   const dEnd = placeById(driver.destinationId)
   const rStart = placeById(rider.startId)
@@ -105,10 +106,16 @@ export function matchPair(driver: Driver, rider: Rider): MatchResult {
     timing = { ok: true, text: 'Both arrive on time' }
   }
 
+  // A woman passenger can cover other pickups on the same day in a group ride.
+  const driverFits = (groupRide && activeRidePreference(driver) === 'another-woman') || meetsRidePreference(driver, [rider])
+  const preference = driverFits && meetsRidePreference(rider, [driver])
+    ? undefined
+    : { ok: false, text: 'Does not meet the ride preference' }
+
   return {
     driver,
     rider,
-    ok: days.ok && detourCheck.ok && timing.ok,
+    ok: days.ok && detourCheck.ok && timing.ok && !preference,
     sharedDays,
     detour,
     departTime: depart,
@@ -118,7 +125,7 @@ export function matchPair(driver: Driver, rider: Rider): MatchResult {
     riderEarly,
     driverEarly,
     riderKm: distanceKm(rStart, rEnd),
-    checks: { days, detour: detourCheck, timing },
+    checks: { days, detour: detourCheck, timing, preference },
   }
 }
 

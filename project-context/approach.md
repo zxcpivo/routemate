@@ -1,6 +1,6 @@
 # Routemate: project approach
 
-_Last updated: 2026-11-07_
+_Last updated: 2026-11-08_
 
 This is the team's agreed approach, built from everyone's notes in this folder: `peter.md`, `canadianslav.md`, `gleb.md` and `prompt-4-value-proposition-minhdang.md`. Where this file and a member's notes disagree, this file wins.
 
@@ -14,7 +14,7 @@ Use this original wording in the pitch. It matches the challenge text and doesn'
 
 ## Problem statement (for interviews)
 
-> We believe students and workers in the suburban GTA without regular access to a car struggle to get to fixed-start classes and shifts on time and within budget when their trip needs a bus transfer or transit doesn't run at the hour they need. Today it is a choice between leaving early enough to absorb a missed connection, risking a late arrival, or paying for a backup ride.
+> We believe university students in the suburban GTA without regular access to a car struggle to get to classes, labs and tutorials on time and within budget when their trip needs a bus transfer or transit doesn't run at the hour they need. Today it is a choice between leaving early enough to absorb a missed connection, risking a late arrival, or paying for a backup ride.
 
 **Root cause: two hypotheses, both still open**
 
@@ -25,11 +25,11 @@ Interviews should tell us which one is true, or whether both are.
 
 ## Who it's for
 
-- **Riders:** students and employees with a fixed start time on recurring days and no regular access to a car. Their transit trip needs at least one transfer, or doesn't run at the hour they need.
-- **Drivers:** people who already drive a similar route at similar times, usually alone.
+- **Riders:** university students who commute to campus on recurring days and no regular access to a car. Their transit trip needs at least one transfer, or doesn't run at the hour they need.
+- **Drivers:** university students who already drive to campus on a compatible schedule and have seats to share.
 - **Not customers for now:** people with good, direct transit, and people whose schedule changes week to week (matching depends on a repeat trip).
 
-**First group to interview: students at York's Keele campus, especially students who also work.** Keele hosts UNHack, the team can reach students there, and working students are both students and employees. The product itself stays general.
+**First campus: York University’s Keele campus.** Start with recurring class trips to campus and the trip home. Students can save separate routes for different days and arrival times.
 
 ## How Routemate works (working concept)
 
@@ -38,22 +38,27 @@ Interviews should tell us which one is true, or whether both are.
 | | Rider enters | Driver enters |
 |---|---|---|
 | Start | Pickup location | Starting point |
-| End | Destination | Destination |
+| End | University campus or a meeting point for the trip home | University campus or a meeting point for the trip home |
 | Time | Required arrival time | Required arrival time |
 | Days | Recurring days | Recurring days |
 | Limits | | Maximum detour (minutes), seats |
+| Student verification | University email and student ID number | University email and student ID number |
+| Profile | Age, interests and ride preference when available | Age, interests and ride preference when available |
 
 **Matching.** A rider is matched with a driver when:
 
 1. Their recurring days overlap.
 2. Picking up and dropping off the rider adds no more time than the driver's maximum detour. The driver chooses this limit; suggest 10 minutes as the default.
 3. Both the driver and the rider arrive by their required times.
+4. The ride meets any applicable gender preferences. When a verified student record lists a student as a woman, she can require at least one other woman on each shared day or choose rides with only women. These rules apply to backup drivers too.
+
+Age proximity and shared interests help rank students who pass the ride checks. The prototype checks the university email and student ID number against fictional records. It does not verify real university enrollment or process ID documents.
 
 **After a match**
 
 - Rider and driver agree on a contribution per ride, in advance, so payment is predictable.
 - The same driver and rider ride together on their shared days.
-- If the regular driver is away, Routemate finds a backup match.
+- If the regular driver is away, Routemate looks for a backup who meets the ride requirements.
 - The rider checks in on arrival.
 
 **Ideas to test (not decided)**
@@ -62,7 +67,7 @@ Interviews should tell us which one is true, or whether both are.
 - **Arrival buffer:** aim to arrive a few minutes before the required time, since being on time is the main pain.
 - **Same-day backups:** when the regular driver is away, offer the ride to any matching driver who is free that day. This is how Gleb's notes describe matching.
 
-**Later, only if interviews show a need:** ID verification, choosing riders or drivers by gender or age, and community groups (workplace, school, building).
+**Later, only if interviews show a need:** University affiliation verification and campus-specific groups.
 
 ## Alternatives to beat
 
@@ -109,7 +114,7 @@ Sources: [TTC fares](https://www.ttc.ca/news/2026/September/Back-to-school-on-th
 
 ## Interview plan
 
-- **Who:** 10 riders at Keele, mostly students who also work, and at least 3 drivers who already drive to Keele at similar times. Include a few people who are happy with transit, to learn who doesn't need Routemate.
+- **Who:** 10 student riders at Keele and at least 3 students who already drive to campus at similar times. Include a few people who are happy with transit, to learn who doesn't need Routemate.
 - **When:** over the next week.
 - **How to recruit:** follow the recruitment table in `gleb.md`: classmates, campus common areas near transit stops, referrals from interviewees, and student commuter groups.
 - **Record for each interview:** rough start and end point, days, required arrival time, door-to-door time, actual costs and who pays, what they've tried, and what happened when a trip went wrong. Keep quotes separate from the team's interpretation.
@@ -118,8 +123,8 @@ Sources: [TTC fares](https://www.ttc.ca/news/2026/September/Back-to-school-on-th
 
 **Rider questions**
 
-1. Walk me through how you got to work or school and home last week. What time did you leave and arrive, and where did you wait or transfer?
-2. Tell me about the last commute that went differently from what you planned, if there was one. What did you do, and what did it cost in time, money, or missed work or class?
+1. Walk me through how you got to campus and home last week. What time did you leave and arrive, and where did you wait or transfer?
+2. Tell me about the last commute that went differently from what you planned, if there was one. What did you do, and what did it cost in time, money, or missed class or lab time?
    - Follow-up: what happened the last time you were late? What did it cost you?
 3. Walk me through what you spent on transportation last week and how those costs were covered.
 4. What, if anything, affects how safe or comfortable you feel during the journey? Can you describe a recent example?
@@ -129,7 +134,7 @@ Sources: [TTC fares](https://www.ttc.ca/news/2026/September/Back-to-school-on-th
 
 **Driver questions**
 
-1. Walk me through your drives to and from work or school last week. Which days, routes, and times were consistent, and what changed?
+1. Walk me through your drives to and from campus last week. Which days, routes, and times were consistent, and what changed?
 2. Tell me about the last time you arranged, offered, or turned down a ride on your commute. What influenced your decision? If you shared the ride, how did pickup and expenses work?
 3. When you've given someone a ride, how far out of your way did you go?
 4. What would make you stop driving someone?

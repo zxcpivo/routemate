@@ -24,6 +24,7 @@ export default function MatchDetail() {
   const first = partner.name.split(' ')[0]
   const { driver, rider } = match
   const checks = [match.checks.days, match.checks.detour, match.checks.timing]
+  if (match.checks.preference) checks.push(match.checks.preference)
 
   const send = () => {
     setSending(true)

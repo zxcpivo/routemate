@@ -9,6 +9,7 @@ import { Avatar, Badge, Stat, Stats } from './ui'
 export function MatchCard({ match, partner, myRole }: { match: MatchResult; partner: Commuter; myRole: Role }) {
   const area = placeById(partner.startId).area
   const checks = [match.checks.days, match.checks.detour, match.checks.timing]
+  if (match.checks.preference) checks.push(match.checks.preference)
 
   const header = (
     <div className="row" style={{ alignItems: 'flex-start' }}>

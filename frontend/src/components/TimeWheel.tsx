@@ -6,7 +6,7 @@ import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } fr
 
 const ROW = 44 // keep in sync with --wheel-row in components.css
 
-function Wheel({ label, items, index, onChange }: { label: string; items: string[]; index: number; onChange: (i: number) => void }) {
+export function Wheel({ label, items, index, onChange, min = 0 }: { label: string; items: string[]; index: number; onChange: (i: number) => void; min?: number }) {
   const el = useRef<HTMLDivElement>(null)
   const [live, setLive] = useState(index) // row under the band while scrolling
   const latest = useRef({ index, onChange })
@@ -72,7 +72,8 @@ function Wheel({ label, items, index, onChange }: { label: string; items: string
     if (!d.moved) {
       // A click: the column holds the pointer, so find the row under it ourselves.
       const y = e.clientY - el.current.getBoundingClientRect().top + el.current.scrollTop
-      go(Math.floor(y / ROW) - 2) // two rows of padding above the first item
+      const padding = (el.current.clientHeight - ROW) / 2
+      go(Math.floor((y - padding) / ROW))
       return
     }
     const i = rowAt()
@@ -99,9 +100,9 @@ function Wheel({ label, items, index, onChange }: { label: string; items: string
       role="spinbutton"
       tabIndex={0}
       aria-label={label}
-      aria-valuemin={0}
-      aria-valuemax={items.length - 1}
-      aria-valuenow={index}
+      aria-valuemin={min}
+      aria-valuemax={min + items.length - 1}
+      aria-valuenow={min + index}
       aria-valuetext={items[index]}
       onScroll={onScroll}
       onPointerDown={onPointerDown}
