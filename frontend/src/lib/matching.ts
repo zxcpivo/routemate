@@ -1,4 +1,4 @@
-// Routemate matching rules (from project-context/approach.md):
+// Routemate matching rules (from docs/product.md):
 //   1. Recurring days overlap.
 //   2. Picking up and dropping off the rider adds no more than the driver's max detour.
 //   3. Both the driver and the rider arrive by their required times.

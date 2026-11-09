@@ -8,7 +8,7 @@ import { compareAffinity, MIN_AGE, type MatchProfile } from '../lib/affinity'
 import { activeRidePreference, meetsRidePreference, type RidePreferences } from '../lib/ridePreferences'
 import type { Day, Driver, Rider, Role } from '../lib/types'
 
-export const MAX_DETOUR = 10 // default from approach.md; drivers can change it on the Choose matches screen
+export const MAX_DETOUR = 10 // default from docs/product.md; drivers can change it on the Choose matches screen
 export const DETOUR_RANGE = { min: 5, max: 20 }
 export const SEATS = 3
 const WEEKS_PER_MONTH = 4.33

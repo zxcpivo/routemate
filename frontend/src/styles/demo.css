@@ -185,22 +185,6 @@
   margin-top: var(--space-2);
 }
 
-/* "or use your email" between social sign-in and the form */
-.or-divider {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  font-size: var(--text-sm);
-  color: var(--color-text-muted);
-}
-
-.or-divider::before,
-.or-divider::after {
-  content: '';
-  flex: 1;
-  border-top: 1px solid var(--color-border);
-}
-
 .demo-note {
   display: flex;
   gap: var(--space-2);
@@ -399,24 +383,6 @@
   background: var(--color-primary);
   border-color: var(--color-primary);
   color: var(--color-on-primary);
-}
-
-.tile-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-2);
-}
-
-.tile-grid--3 {
-  grid-template-columns: repeat(3, 1fr);
-}
-
-.tile-grid--3 .tile {
-  padding-right: var(--space-3);
-}
-
-.tile-grid--3 .tile__check {
-  display: none;
 }
 
 /* ---------- Checkbox row ---------- */
