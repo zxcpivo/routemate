@@ -6,7 +6,7 @@
 
 Routemate is a carpooling prototype for university students, starting at York University’s Keele campus. It uses fictional students and simulates ride requests. It runs in the browser without a backend.
 
-[Judge demo on GitHub Pages](https://zxcpivo.github.io/routemate/)
+[GitHub Pages Demo](https://zxcpivo.github.io/routemate/)
 
 ## Launch locally
 
