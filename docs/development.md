@@ -60,4 +60,4 @@ npm run preview
 
 This build uses relative asset URLs and hash routes so it works under a repository subpath. Open the preview root and `http://localhost:4173/#/setup/rider`, then reload the deep link. The normal `npm run build` uses browser paths instead.
 
-After deploying, check the [workflow run](https://github.com/zxcpivo/unhack-shenanigans/actions/workflows/pages.yml), open the [demo linked in the README](../README.md), and append `#/setup/rider` to that same site URL to check the deployed deep link.
+After deploying, check the [workflow run](https://github.com/zxcpivo/routemate/actions/workflows/pages.yml), open the [demo linked in the README](../README.md), and append `#/setup/rider` to that same site URL to check the deployed deep link.
