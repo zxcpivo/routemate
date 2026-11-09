@@ -4,9 +4,9 @@ Use this guide when updating Routemate with an LLM or coding agent. Open the sou
 
 ## Project context
 
-- [Agreed approach](project-context/approach.md) records product decisions and takes precedence over individual team notes. [Judging guide](project-context/unhack-prototype.md) covers the submission and what the prototype demonstrates.
+- [Product decisions](docs/product.md) records the agreed scope. [Research notes](docs/research.md) preserves the two supplied interviews; earlier simulated interviews are not customer evidence.
 - [Demo flow](docs/demo-flow.md) is the agreed screen flow. Update it in the same change when you add, remove or reorder a screen.
-- [README](README.md) has setup, smoke tests, and publishing steps. [Frontend guide](frontend/README.md) walks through the screens. [Design system](frontend/DESIGN_SYSTEM.md) describes styling and interaction patterns.
+- [README](README.md) has setup and common commands. [Development guide](docs/development.md) has smoke tests and publishing steps. [Design system](frontend/DESIGN_SYSTEM.md) describes styling and interaction patterns.
 - Routemate is a React and TypeScript prototype. Keep the demo data fictional. Accounts, requests, and check-ins are simulated in the browser. Present travel times and savings as estimates. Treat the interview simulations in the project notes as hypotheses.
 
 ## Where to make changes
@@ -33,10 +33,6 @@ Use this guide when updating Routemate with an LLM or coding agent. Open the sou
 ## Verify a change
 
 1. Use Node.js 24. Run `npm ci`, `npm run lint`, and `npm run build` from `frontend/`.
-2. Run the relevant [README smoke tests](README.md#test-the-prototype). For matching, location, or schedule changes, check both demo roles, the preview buttons for the no-match and nobody-selected screens, and the fuller setup route. If expected results change, update the demo guide and README to match.
+2. Run the relevant [smoke tests](docs/development.md#test-the-prototype). For matching, location, or schedule changes, check both demo roles, the preview buttons for the no-match and nobody-selected screens, and the fuller setup route. If expected results change, update the demo flow and development guide to match.
 3. For UI changes, check mobile and desktop widths, including 320px with three riders in the car: button text must stay inside its button. Try Back, Restart, and a reload partway through the flow when changing navigation or saved answers.
 4. For hosting changes, run `npm run build:pages`. Check that the published root loads and that `/#/setup/rider` opens directly and survives a reload.
-
-Example prompt for a collaborator's LLM
-
-> Read `AGENTS.md`. Change the driver savings screen to show the cost per rider alongside the monthly estimate. Keep the matching rules and presets. Run the driver smoke test and report what you verified.

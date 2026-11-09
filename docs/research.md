@@ -6,7 +6,7 @@ _Recorded: 2026-11-07_
 
 These notes summarize the two interview transcripts Gleb supplied in chat. Participants are identified as Person 1 and Person 2; no names were supplied. The interview dates were not separately confirmed. This is self-reported customer evidence, not independently verified fares, expenses, travel times, or observed use of Routemate.
 
-Keep these interviews separate from the six **simulated** interviews in [peter.md](peter.md). The statement in [approach.md](approach.md) that no real interviews have been supplied predates these notes. The team now has two supplied interviews: one driver and one transit passenger. Neither participant has booked or paid for Routemate in the evidence provided.
+The team has two supplied interviews: one driver and one transit passenger. Earlier simulated interviews are not customer evidence. Neither participant has booked or paid for Routemate in the evidence provided. See [product.md](product.md) for the agreed product direction.
 
 The team's concept is **rides arranged beforehand, preferably with the same driver on recurring routes and days**. This clarification came from Gleb after checking with a teammate. Product choices are separate from evidence that customers will use the product.
 
@@ -145,7 +145,7 @@ This participant suggests a candidate subgroup: **campus residents with fixed ea
 - Let both sides agree on a specific contribution in advance; interviews have not established the amount.
 - Clarify confirmation, waiting, and cancellation expectations. A backup driver is still a proposed capability, not proven available supply.
 
-These are design priorities informed by the accounts, not validated feature demand or instructions to expand the agreed build scope in [approach.md](approach.md).
+These are design priorities informed by the accounts, not validated feature demand or instructions to expand the agreed build scope in [product.md](product.md).
 
 ### Demo
 

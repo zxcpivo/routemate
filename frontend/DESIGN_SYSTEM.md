@@ -1,7 +1,5 @@
 # Routemate design system
 
-_Version 0.2 · 2026-11-07 · for the clickable prototype_
-
 Routemate helps people with fixed start times get there on time with someone they know. The interface should feel **trustworthy, calm and punctual**: plain language, clear times, no surprises.
 
 Tokens live in [`src/styles/tokens.css`](src/styles/tokens.css). Components live in [`src/components/`](src/components/) and their styles in [`src/styles/components.css`](src/styles/components.css). Don't hard-code colours, sizes or shadows in screens; use a token or a component.
@@ -36,7 +34,7 @@ Tokens live in [`src/styles/tokens.css`](src/styles/tokens.css). Components live
 | `--color-danger` / `-soft` | `#b91c1c` / `#fbe5e5` | `#f87171` / `#3a1717` | Rule failed, destructive |
 | `--color-info` / `-soft` | `#1d4ed8` / `#e4ecfb` | `#93b4fb` / `#16223f` | Prototype banner, tips |
 
-All text pairs meet WCAG AA (4.5:1) against their background. Status colours always appear with an icon or label, never colour alone.
+Text pairs should meet WCAG AA (4.5:1) against their background. Status colours always appear with an icon or label, never colour alone.
 
 ### Typography
 
@@ -93,7 +91,7 @@ Styles in [`src/styles/demo.css`](src/styles/demo.css), code in [`src/demo/`](sr
 | **ThemeSwitch** | — | shows the mode it switches to (Dark mode / Light mode) | Native button; choice saved as `routemate-theme` |
 | **PhoneFrame + PresenterPanel** | Frame and side panel from 900px up; full screen below | Current / done step in the panel | Panel is an `<aside>`; current step has `aria-current="step"` |
 | **StepLayout** | title, lede, primary CTA, secondary action | CTA disabled, loading | Each step is a `<form>`, so Enter continues; heading gets focus on each new step |
-| **ProgressBar** | step / total | — | `role="progressbar"` with "Step n of 7: name" |
+| **ProgressBar** | step / total | — | `role="progressbar"` with the current step and total: eight for the first route, five when managing a route |
 | **Tile** | `radio` · `checkbox`; `sm` · `md` · `lg` | selected (primary border + soft fill + check), disabled, focus | Native radio / checkbox inside a `<label>` |
 | **Pitch** | big number, label above and below | — | Plain text; the number is never the only label |
 | **LiveSummary** | detour + savings | over limit (warning tone, CTA blocked, “Raise my limit to … min” button) | `aria-live="polite"` |
@@ -115,4 +113,4 @@ Styles in [`src/styles/demo.css`](src/styles/demo.css), code in [`src/demo/`](sr
 
 ## Open questions
 
-- Whether to show the contribution comparison (TTC fare, Uber) on the match screen depends on the service-fee decision in `approach.md`.
+- A service fee remains undecided; see the [product decisions](../docs/product.md).
